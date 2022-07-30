@@ -1,9 +1,11 @@
-
+#include<stdio.h>
+#include<stdlib.h>
 void start();
 
 int main(){
 
     start();
+    return 0;
 }
 
 void start(){
