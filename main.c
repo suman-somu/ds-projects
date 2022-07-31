@@ -59,7 +59,7 @@ int main(){
 }
 
 struct customers* Login_Authentication(struct customers c[]) {
-    
+    printf("Printing from Login_Authentication function.");
 }
 
 void Default_Input(struct customers* c){
