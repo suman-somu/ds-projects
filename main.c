@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <windows.h>
 #include <string.h>
 
 struct contact{
@@ -200,10 +199,6 @@ void gotoxy(int x, int y)
     The gotoxy() function places the cursor at the desired location on the screen.
     SetConsoleCursorPosition is present in windows.h header file.
     */
-    COORD c;
-    c.X = x;
-    c.Y = y;
- 
-    SetConsoleCursorPosition(
-        GetStdHandle(STD_OUTPUT_HANDLE), c);
+
+        printf("%c[%d;%df",0x1B,y,x);
 }
