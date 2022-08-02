@@ -4,6 +4,8 @@
 #include <termios.h>
 #include <unistd.h>
 
+
+//return 0-9 as 48-57 
 int getch(void)
 {
     struct termios oldattr, newattr;
@@ -107,7 +109,7 @@ void showContacts(customer *c){
 
     system("clear");
     system("cls");
-    printf("\nS.No \t Contact List :-\n");
+    printf("\nS.No \t CONTACT LIST :-\n\n");
     int numberOfContacts = c->n;
     for(int i=1;i<numberOfContacts;i++){
         printf("%d\t %s \n",i, ((c->directory)+i)->name);
@@ -115,28 +117,34 @@ void showContacts(customer *c){
 
     printf("\n\n1 choose a contact \t\t0 exit to menu\n");
     int choose = chooseBetweenTwo(0,1);
-    if(choose == 1)
-        contactDetails(c->directory);
+    if(choose == 1){
+        printf("\nchoose a contact to show details :");
+        int choose;
+        scanf("%d",&choose);
+        contactDetails(c, choose);
+
+    }
     else 
         mainMenu(c);
 }
 
-void contactDetails( contact *c){
-    printf("\nchoose a contact to show details :");
-    int choose;
-    scanf("%d",&choose);
-    
+void contactDetails( customer *c, int choose){
 
     system("clear");
     system("cls");
     printf("\nCONTACT DETAILS :- \n\n");
-    printf("Name - %s\nNumber - %s\nEmail - %s",(c+(choose))->name,(c+(choose))->number,(c+(choose))->email);
+    printf("Name - %s\nNumber - %s\nEmail - %s\n\n\n",((c->directory)+(choose))->name,((c->directory)+(choose))->number,((c->directory)+(choose))->email);
+    printf("1 edit contact\t0 return\n\n");
+    int ch = chooseBetweenTwo(0,1);
+    if(ch ==1)
+        editContact(c,choose);
+    else
+        showContacts(c);
 }
 
 int chooseBetweenTwo(int a, int b){
 
-    int ch;
-    scanf("%d",&ch);
+    int ch = getch()-48;
     if(ch==a || ch==b)
         return ch;
     else {
@@ -144,8 +152,11 @@ int chooseBetweenTwo(int a, int b){
         chooseBetweenTwo(a,b);
     }
 }
-void editContact(){
 
+void editContact(customer *c, int choose){
+    printf("\n\nin progress\n press anything to return\n");
+    getch();
+    contactDetails(c,choose);
 }
 
 void searchContact(){
