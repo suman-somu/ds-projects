@@ -1,17 +1,44 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <termios.h>
+#include <unistd.h>
 
-struct contact
+int getch(void)
+{
+    struct termios oldattr, newattr;
+    int ch;
+    tcgetattr( STDIN_FILENO, &oldattr );
+    newattr = oldattr;
+    newattr.c_lflag &= ~( ICANON | ECHO );
+    tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
+    ch = getchar();
+    tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
+    return ch;
+}
+int getche(void)
+{
+    struct termios oldattr, newattr;
+    int ch;
+    tcgetattr( STDIN_FILENO, &oldattr );
+    newattr = oldattr;
+    newattr.c_lflag &= ~( ICANON );
+    tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
+    ch = getchar();
+    tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
+    return ch;
+}
+
+typedef struct contact
 {
     char name[50];
-    char gmail[41];
-    char mobile[11];
-};
+    char email[41];
+    char number[11];
+}contact;
 typedef struct customers
 {
     char name[50];
-    char gmail[41];
+    char email[41];
     char password[13];
     int n;
     struct contact *directory;
@@ -19,12 +46,13 @@ typedef struct customers
 
 void gotoxy(int x, int y);
 void titleScreen();
-void defaultInput(struct customers *c);
-struct customers *loginAuthentication(struct customers c[]);
+void defaultInput(customer *c);
+customer *loginAuthentication(customer c[]);
 void mainMenu();
-void showContacts();
+void showContacts(customer *c);
 void searchContact();
 void addContact();
+void editContact();
 
 int main()
 {
@@ -34,42 +62,89 @@ int main()
     Demo of how to access the input.
 
     printf("%s  ", (c->directory)->name); Accessing the name of first contact of first customer.
-    printf("%s  ", (c->directory)->mobile); Accessing the mobile of first contact of first customer.
-    printf("%s  ", (c->directory)->gmail); Accessing the gmail of first contact of first customer.
+    printf("%s  ", (c->directory)->number); Accessing the number of first contact of first customer.
+    printf("%s  ", (c->directory)->email); Accessing the email of first contact of first customer.
     printf("\n\n");
 
     printf("%s  ", ((c->directory)+1)->name); Accessing the name of second contact of first customer.
-    printf("%s  ", ((c->directory)+1)->mobile);
-    printf("%s  ", ((c->directory)+1)->gmail);
+    printf("%s  ", ((c->directory)+1)->number);
+    printf("%s  ", ((c->directory)+1)->email);
     printf("\n\n");
 
     printf("%s  ", ((c+1)->directory)->name); Accessing the name of first contact of second customer.
-    printf("%s  ", ((c+1)->directory)->mobile);
-    printf("%s  ", ((c+1)->directory)->gmail);
+    printf("%s  ", ((c+1)->directory)->number);
+    printf("%s  ", ((c+1)->directory)->email);
     printf("\n\n");
 
     */
 
     titleScreen();
 
-    loginAuthentication(c);
+    // customer *c = loginAuthentication(c);
 
-    mainMenu();
+    mainMenu(c);
 
 }
 
-void mainMenu(){
+void mainMenu(customer *c){
 
-    printf("\n\nentered main menu");
 
+    system("clear");
+    system("cls");
+    printf("\n\nentered main menu\n\n");
+    
     // implement logic to call 
     // 1 showContacts()
     // 2 searchContact()
     // 3 addContact()
 
+    getch();
+    showContacts(c);
+
 }
 
-void showContacts(){
+void showContacts(customer *c){
+
+    system("clear");
+    system("cls");
+    printf("\nS.No \t Contact List :-\n");
+    int numberOfContacts = c->n;
+    for(int i=1;i<numberOfContacts;i++){
+        printf("%d\t %s \n",i, ((c->directory)+i)->name);
+    }
+
+    printf("\n\n1 choose a contact \t\t0 exit to menu\n");
+    int choose = chooseBetweenTwo(0,1);
+    if(choose == 1)
+        contactDetails(c->directory);
+    else 
+        mainMenu(c);
+}
+
+void contactDetails( contact *c){
+    printf("\nchoose a contact to show details :");
+    int choose;
+    scanf("%d",&choose);
+    
+
+    system("clear");
+    system("cls");
+    printf("\nCONTACT DETAILS :- \n\n");
+    printf("Name - %s\nNumber - %s\nEmail - %s",(c+(choose))->name,(c+(choose))->number,(c+(choose))->email);
+}
+
+int chooseBetweenTwo(int a, int b){
+
+    int ch;
+    scanf("%d",&ch);
+    if(ch==a || ch==b)
+        return ch;
+    else {
+        printf("wrong input try once more");
+        chooseBetweenTwo(a,b);
+    }
+}
+void editContact(){
 
 }
 
@@ -81,12 +156,12 @@ void addContact(){
 
 }
 
-struct customers *loginAuthentication(struct customers c[])
+customer *loginAuthentication(customer c[])
 {
-    printf("Printing from login authentication function.");
+    printf("\nPrinting from login authentication function.\n");
 }
 
-void defaultInput(struct customers *c)
+void defaultInput(customer *c)
 {
 
     /*
@@ -96,100 +171,100 @@ void defaultInput(struct customers *c)
     {
         // Entering data for 1st customer.
         strcpy(c->name, "Baibhav Kumar");
-        strcpy(c->gmail, "baibhav.kumar@gmail.com");
+        strcpy(c->email, "baibhav.kumar@email.com");
         strcpy(c->password, "Baibhav@123");
         c->n = 5;
         c->directory = (struct contact *)malloc((c->n) * sizeof(struct contact));
 
         strcpy(((c->directory) + 0)->name, "Pratik Prakhar");
-        strcpy(((c->directory) + 0)->gmail, "pratik.prakhar@gmail.com");
-        strcpy(((c->directory) + 0)->mobile, "8249539257");
+        strcpy(((c->directory) + 0)->email, "pratik.prakhar@email.com");
+        strcpy(((c->directory) + 0)->number, "8249539257");
 
         strcpy(((c->directory) + 1)->name, "Yash Raj Singh");
-        strcpy(((c->directory) + 1)->gmail, "yashraj.singh@gmail.com");
-        strcpy(((c->directory) + 1)->mobile, "9693221160");
+        strcpy(((c->directory) + 1)->email, "yashraj.singh@email.com");
+        strcpy(((c->directory) + 1)->number, "9693221160");
 
         strcpy(((c->directory) + 2)->name, "Dibya Ranjan Sahu");
-        strcpy(((c->directory) + 2)->gmail, "dibya.ranjan@gmail.com");
-        strcpy(((c->directory) + 2)->mobile, "9348174331");
+        strcpy(((c->directory) + 2)->email, "dibya.ranjan@email.com");
+        strcpy(((c->directory) + 2)->number, "9348174331");
 
         strcpy(((c->directory) + 3)->name, "Shubhank Nagar");
-        strcpy(((c->directory) + 3)->gmail, "shubhank.nagar@gmail.com");
-        strcpy(((c->directory) + 3)->mobile, "9001332089");
+        strcpy(((c->directory) + 3)->email, "shubhank.nagar@email.com");
+        strcpy(((c->directory) + 3)->number, "9001332089");
 
         strcpy(((c->directory) + 4)->name, "Ritesh Kumar");
-        strcpy(((c->directory) + 4)->gmail, "ritesh.kumar@gmail.com");
-        strcpy(((c->directory) + 4)->mobile, "8239084216");
+        strcpy(((c->directory) + 4)->email, "ritesh.kumar@email.com");
+        strcpy(((c->directory) + 4)->number, "8239084216");
     }
 
     {
         // Entering data for 2nd customer.
         strcpy((c + 1)->name, "Hemant Sah");
-        strcpy((c + 1)->gmail, "hemant.sah@gmail.com");
+        strcpy((c + 1)->email, "hemant.sah@email.com");
         strcpy((c + 1)->password, "Hemant@123");
         (c + 1)->n = 6;
         (c + 1)->directory = (struct contact *)malloc(((c + 1)->n) * sizeof(struct contact));
 
         strcpy((((c + 1)->directory) + 0)->name, "Pratik Prakhar");
-        strcpy((((c + 1)->directory) + 0)->gmail, "pratik.prakhar@gmail.com");
-        strcpy((((c + 1)->directory) + 0)->mobile, "8249539257");
+        strcpy((((c + 1)->directory) + 0)->email, "pratik.prakhar@email.com");
+        strcpy((((c + 1)->directory) + 0)->number, "8249539257");
 
         strcpy((((c + 1)->directory) + 1)->name, "Yash Raj Singh");
-        strcpy((((c + 1)->directory) + 1)->gmail, "yashraj.singh@gmail.com");
-        strcpy((((c + 1)->directory) + 1)->mobile, "9693221160");
+        strcpy((((c + 1)->directory) + 1)->email, "yashraj.singh@email.com");
+        strcpy((((c + 1)->directory) + 1)->number, "9693221160");
 
         strcpy((((c + 1)->directory) + 2)->name, "Dibya Ranjan Sahu");
-        strcpy((((c + 1)->directory) + 2)->gmail, "dibya.ranjan@gmail.com");
-        strcpy((((c + 1)->directory) + 2)->mobile, "9348174331");
+        strcpy((((c + 1)->directory) + 2)->email, "dibya.ranjan@email.com");
+        strcpy((((c + 1)->directory) + 2)->number, "9348174331");
 
         strcpy((((c + 1)->directory) + 3)->name, "Shubhank Nagar");
-        strcpy((((c + 1)->directory) + 3)->gmail, "shubhank.nagar@gmail.com");
-        strcpy((((c + 1)->directory) + 3)->mobile, "9001332089");
+        strcpy((((c + 1)->directory) + 3)->email, "shubhank.nagar@email.com");
+        strcpy((((c + 1)->directory) + 3)->number, "9001332089");
 
         strcpy((((c + 1)->directory) + 4)->name, "Ritesh Kumar");
-        strcpy((((c + 1)->directory) + 4)->gmail, "ritesh.kumar@gmail.com");
-        strcpy((((c + 1)->directory) + 4)->mobile, "8239084216");
+        strcpy((((c + 1)->directory) + 4)->email, "ritesh.kumar@email.com");
+        strcpy((((c + 1)->directory) + 4)->number, "8239084216");
 
         strcpy((((c + 1)->directory) + 5)->name, "Ritesh Kumar");
-        strcpy((((c + 1)->directory) + 5)->gmail, "ritesh.kumar@gmail.com");
-        strcpy((((c + 1)->directory) + 5)->mobile, "8239084216");
+        strcpy((((c + 1)->directory) + 5)->email, "ritesh.kumar@email.com");
+        strcpy((((c + 1)->directory) + 5)->number, "8239084216");
     }
 
     {
         // Entering data for 3rd customer.
         strcpy((c + 2)->name, "Suman Sahoo");
-        strcpy((c + 2)->gmail, "suman.sahoo@gmail.com");
+        strcpy((c + 2)->email, "suman.sahoo@email.com");
         strcpy((c + 2)->password, "Suman@123");
         (c + 2)->n = 7;
         (c + 2)->directory = (struct contact *)malloc(((c + 2)->n) * sizeof(struct contact));
 
         strcpy((((c + 2)->directory) + 0)->name, "Pratik Prakhar");
-        strcpy((((c + 2)->directory) + 0)->gmail, "pratik.prakhar@gmail.com");
-        strcpy((((c + 2)->directory) + 0)->mobile, "8249539257");
+        strcpy((((c + 2)->directory) + 0)->email, "pratik.prakhar@email.com");
+        strcpy((((c + 2)->directory) + 0)->number, "8249539257");
 
         strcpy((((c + 2)->directory) + 1)->name, "Yash Raj Singh");
-        strcpy((((c + 2)->directory) + 1)->gmail, "yashraj.singh@gmail.com");
-        strcpy((((c + 2)->directory) + 1)->mobile, "9693221160");
+        strcpy((((c + 2)->directory) + 1)->email, "yashraj.singh@email.com");
+        strcpy((((c + 2)->directory) + 1)->number, "9693221160");
 
         strcpy((((c + 2)->directory) + 2)->name, "Dibya Ranjan Sahu");
-        strcpy((((c + 2)->directory) + 2)->gmail, "dibya.ranjan@gmail.com");
-        strcpy((((c + 2)->directory) + 2)->mobile, "9348174331");
+        strcpy((((c + 2)->directory) + 2)->email, "dibya.ranjan@email.com");
+        strcpy((((c + 2)->directory) + 2)->number, "9348174331");
 
         strcpy((((c + 2)->directory) + 3)->name, "Shubhank Nagar");
-        strcpy((((c + 2)->directory) + 3)->gmail, "shubhank.nagar@gmail.com");
-        strcpy((((c + 2)->directory) + 3)->mobile, "9001332089");
+        strcpy((((c + 2)->directory) + 3)->email, "shubhank.nagar@email.com");
+        strcpy((((c + 2)->directory) + 3)->number, "9001332089");
 
         strcpy((((c + 2)->directory) + 4)->name, "Ritesh Kumar");
-        strcpy((((c + 2)->directory) + 4)->gmail, "ritesh.kumar@gmail.com");
-        strcpy((((c + 2)->directory) + 4)->mobile, "8239084216");
+        strcpy((((c + 2)->directory) + 4)->email, "ritesh.kumar@email.com");
+        strcpy((((c + 2)->directory) + 4)->number, "8239084216");
 
         strcpy((((c + 2)->directory) + 5)->name, "Ritesh Kumar");
-        strcpy((((c + 2)->directory) + 5)->gmail, "ritesh.kumar@gmail.com");
-        strcpy((((c + 2)->directory) + 5)->mobile, "8239084216");
+        strcpy((((c + 2)->directory) + 5)->email, "ritesh.kumar@email.com");
+        strcpy((((c + 2)->directory) + 5)->number, "8239084216");
 
         strcpy((((c + 2)->directory) + 6)->name, "Ritesh Kumar");
-        strcpy((((c + 2)->directory) + 6)->gmail, "ritesh.kumar@gmail.com");
-        strcpy((((c + 2)->directory) + 6)->mobile, "8239084216");
+        strcpy((((c + 2)->directory) + 6)->email, "ritesh.kumar@email.com");
+        strcpy((((c + 2)->directory) + 6)->number, "8239084216");
     }
 }
 
@@ -198,6 +273,7 @@ void titleScreen()
     /*
     This function presents the first screen before the audience. It mentions the project name and developers name.
     */
+    system("clear");
     system("cls");
     gotoxy(76, 16);
     printf("Project Phone Book");
@@ -210,6 +286,7 @@ void titleScreen()
     gotoxy(76, 27);
     printf("Suman Sahoo, ID: B421056");
     gotoxy(00, 29);
+    getch();
 }
 
 void gotoxy(int x, int y)
@@ -220,3 +297,11 @@ void gotoxy(int x, int y)
     */
     printf("%c[%d;%df", 0x1B, y, x);
 }
+
+
+
+
+
+
+// NOTE
+// remove system(cls) or system(clear) expression in the title function in your system while presentation 
