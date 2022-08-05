@@ -100,8 +100,31 @@ void mainMenu(customer *c){
     // 2 searchContact()
     // 3 addContact()
 
-    getch();
-    showContacts(c);
+    printf("enter a number from below\n");
+    printf("1 Show Contacts\n2 search contacts\n3 add contacts\n0 exit\n");
+    int ch = getch() - 48;
+
+    if(ch == 1)
+        showContacts(c);
+    else if ( ch ==2)
+        searchContact(c);
+    else if (ch == 3)
+        addContact();
+    else if ( ch ==  0){
+        system("cls");
+        system("clear");
+        gotoxy(80,25);
+        printf("THANK YOU FOR USING OUR SYSTEM.");
+        gotoxy(83,28);
+        printf("made with love from grp 2\n\n\n");
+        gotoxy(0,50);
+        exit(0);
+    }
+    else {
+        printf("wrong no. try again");
+        getch();
+        mainMenu(c);
+    }
 
 }
 
@@ -142,25 +165,40 @@ void contactDetails( customer *c, int choose){
         showContacts(c);
 }
 
-int chooseBetweenTwo(int a, int b){
-
-    int ch = getch()-48;
-    if(ch==a || ch==b)
-        return ch;
-    else {
-        printf("wrong input try once more");
-        chooseBetweenTwo(a,b);
-    }
-}
-
 void editContact(customer *c, int choose){
     printf("\n\nin progress\n press anything to return\n");
     getch();
     contactDetails(c,choose);
 }
 
-void searchContact(){
+void searchContact(customer *c){
+    //search by name or by number
 
+    system("cls");
+    system("clear");
+    printf("SEARCH CONTACTS:\n\n\n");
+    printf("1\tby name\n2\tby number\n");
+    printf("\n\n0\treturn to menu");
+    int ch = getch()-48;
+
+    switch(ch){
+        case 1:
+            printf("\n\nbuilding just wait \n\n");
+            getch();
+            searchContact(c);
+        case 2:
+            printf("\n\nbuilding just wait \n\n");
+            getch();
+            searchContact(c);
+        case 0: 
+            mainMenu(c);
+            break;
+        default:
+            printf("\n\nwrong choice");
+            getch();
+            searchContact(c);
+            break;
+    }
 }
 
 void addContact(){
@@ -309,6 +347,21 @@ void gotoxy(int x, int y)
     printf("%c[%d;%df", 0x1B, y, x);
 }
 
+int chooseBetweenTwo(int a, int b){
+
+    int ch = getch()-48;
+    if(ch==a || ch==b)
+        return ch;
+    else {
+        if(ch < 0){
+            chooseBetweenTwo(a,b);
+        }
+        else {
+            printf("wrong input try once more\n");
+            chooseBetweenTwo(a,b);
+        }
+    }
+}
 
 
 
