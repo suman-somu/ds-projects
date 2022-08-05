@@ -391,9 +391,6 @@ int chooseBetweenTwo(int a, int b){
     }
 }
 
-int chooseBetweenTwo(int a){
-    
-}
 
 
 
