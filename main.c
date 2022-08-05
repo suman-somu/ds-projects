@@ -55,6 +55,8 @@ void showContacts(customer *c);
 void searchContact();
 void addContact();
 void editContact();
+int chooseBetweenTwo(int a, int b);
+void contactDetails( customer *c, int choose);
 
 int main()
 {
@@ -199,6 +201,17 @@ void searchContact(customer *c){
             searchContact(c);
             break;
     }
+}
+
+void searchByName(){
+
+    system("cls");
+    system("clear");
+    printf("SEARCH CONTACTS:\n\n\n");
+
+    printf("enter the name:");
+    char name;
+    scanf("%s",&name);
 }
 
 void addContact(){
