@@ -104,14 +104,15 @@ void mainMenu(customer *c){
 
     printf("enter a number from below\n");
     printf("1 Show Contacts\n2 search contacts\n3 add contacts\n0 exit\n");
-    int ch = getch() - 48;
+    
+    int ch = getch() -48 ;
 
     if(ch == 1)
         showContacts(c);
     else if ( ch ==2)
         searchContact(c);
     else if (ch == 3)
-        addContact();
+        addContact(c);
     else if ( ch ==  0){
         system("cls");
         system("clear");
@@ -155,16 +156,25 @@ void showContacts(customer *c){
 
 void contactDetails( customer *c, int choose){
 
-    system("clear");
-    system("cls");
-    printf("\nCONTACT DETAILS :- \n\n");
-    printf("Name - %s\nNumber - %s\nEmail - %s\n\n\n",((c->directory)+(choose))->name,((c->directory)+(choose))->number,((c->directory)+(choose))->email);
-    printf("1 edit contact\t0 return\n\n");
-    int ch = chooseBetweenTwo(0,1);
-    if(ch ==1)
-        editContact(c,choose);
-    else
+    if(choose <= c->n){
+        system("clear");
+        system("cls");
+        printf("\nCONTACT DETAILS :- \n\n");
+        printf("Name - %s\nNumber - %s\nEmail - %s\n\n\n",((c->directory)+(choose))->name,((c->directory)+(choose))->number,((c->directory)+(choose))->email);
+        printf("1 edit contact\t0 return\n\n");
+        int ch = chooseBetweenTwo(0,1);
+        if(ch ==1)
+            editContact(c,choose);
+        else
+            showContacts(c);
+    }
+    else {
+        printf("\n\nthere is no contact of that number.");
+        printf("\ntry again once more\n\n");
+        sleep(2);
         showContacts(c);
+        
+    }
 }
 
 void editContact(customer *c, int choose){
@@ -214,8 +224,13 @@ void searchByName(){
     scanf("%s",&name);
 }
 
-void addContact(){
+void addContact(customer *c){
 
+    system("cls");
+    system("clear");
+    printf("\n\nbuilding it. just wait\n\n\n");
+    getch();
+    mainMenu(c);
 }
 
 customer *loginAuthentication(customer c[])
@@ -376,7 +391,9 @@ int chooseBetweenTwo(int a, int b){
     }
 }
 
-
+int chooseBetweenTwo(int a){
+    
+}
 
 
 
