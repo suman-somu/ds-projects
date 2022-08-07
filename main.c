@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <termios.h>
+#include <windows.h>
+// #include <termios.h>
 #include <unistd.h>
 
-
 //return 0-9 as 48-57 
-int getch(void)
+/*int getch(void)
 {
     struct termios oldattr, newattr;
     int ch;
@@ -30,7 +30,7 @@ int getche(void)
     tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
     return ch;
 }
-
+*/
 typedef struct contact
 {
     char name[50];
@@ -48,18 +48,18 @@ typedef struct customers
 
 void gotoxy(int x, int y);
 void titleScreen();
-void defaultInput(customer *c);
+void defaultInput(customer *c,int add);
 customer *loginAuthentication(customer c[]);
 void mainMenu();
 void showContacts(customer *c);
-void searchContact();
-void addContact();
-void editContact();
+void searchContact(customer *c);
+void addContact(customer *c);
+void editContact(customer *c,int choose);
 
 int main()
 {
     customer c[3];
-    defaultInput(c);
+    defaultInput(c,0);
     /*
     Demo of how to access the input.
 
@@ -109,7 +109,7 @@ void mainMenu(customer *c){
     else if ( ch ==2)
         searchContact(c);
     else if (ch == 3)
-        addContact();
+        addContact(c);
     else if ( ch ==  0){
         system("cls");
         system("clear");
@@ -134,8 +134,8 @@ void showContacts(customer *c){
     system("cls");
     printf("\nS.No \t CONTACT LIST :-\n\n");
     int numberOfContacts = c->n;
-    for(int i=1;i<numberOfContacts;i++){
-        printf("%d\t %s \n",i, ((c->directory)+i)->name);
+    for(int i=0;i<numberOfContacts;i++){
+        printf("%d\t %s \n",i+1, ((c->directory)+i)->name);
     }
 
     printf("\n\n1 choose a contact \t\t0 exit to menu\n");
@@ -156,20 +156,54 @@ void contactDetails( customer *c, int choose){
     system("clear");
     system("cls");
     printf("\nCONTACT DETAILS :- \n\n");
-    printf("Name - %s\nNumber - %s\nEmail - %s\n\n\n",((c->directory)+(choose))->name,((c->directory)+(choose))->number,((c->directory)+(choose))->email);
+    printf("Name - %s\nNumber - %s\nEmail - %s\n\n\n",((c->directory)+(choose-1))->name,((c->directory)+(choose-1))->number,((c->directory)+(choose-1))->email);
     printf("1 edit contact\t0 return\n\n");
     int ch = chooseBetweenTwo(0,1);
     if(ch ==1)
-        editContact(c,choose);
+        editContact(c,choose-1);
     else
         showContacts(c);
 }
 
 void editContact(customer *c, int choose){
-    printf("\n\nin progress\n press anything to return\n");
+   
+    char name[20], number[11], email[30];
+
+    printf("\t\t\t\t\t\n\nEdit Contact");
+    printf("\n 1.Name\n 2.Number\n 3.Email\n 4.Cancel\n\n");
+    int ch = getch() - 48;
+
+    if(ch == 1){
+    printf("\nEnter Name : ");
+     getchar();
+        gets(name);
+        strcpy(((c->directory) + choose)->name,name);
+        printf("Your name has been edited\n");
+    }
+    else if( ch ==2){
+    printf("\nEnter Number : ");
+        getchar();
+        gets(number);
+        strcpy(((c->directory) + choose)->number,number);
+        printf("Your number has been edited\n");
+    }
+    else if(ch == 3){
+    printf("\nEnter Email : ");
+        getchar();
+        gets(email);
+        strcpy(((c->directory) + choose)->email,email);
+        printf("Your email has been edited\n");
+    }
+    else if(ch==4){
+        system("cls");
+        printf("\nYour contact has not been edited\n");
+     showContacts(c);
+    }
+    printf("\nPress any Key to go back to main menu");
     getch();
-    contactDetails(c,choose);
-}
+        mainMenu(c);
+
+    }
 
 void searchContact(customer *c){
     //search by name or by number
@@ -201,8 +235,24 @@ void searchContact(customer *c){
     }
 }
 
-void addContact(){
+void addContact(customer *c){
+   
+     defaultInput(c,1);
 
+    char name[20], number[11], email[30];
+    printf("\t\t\t\t\tAdd Contact");
+    printf("\nName : ");
+    gets(name);
+    printf("\nNumber : ");
+    gets(number);
+    printf("\nEmail : ");
+    gets(email);
+
+        strcpy(((c->directory) + 4 + 1)->name,name);
+        strcpy(((c->directory) + 4 + 1)->email,email);
+        strcpy(((c->directory) + 4 + 1)->number,number);
+
+        mainMenu(c);
 }
 
 customer *loginAuthentication(customer c[])
@@ -210,7 +260,7 @@ customer *loginAuthentication(customer c[])
     printf("\nPrinting from login authentication function.\n");
 }
 
-void defaultInput(customer *c)
+void defaultInput(customer *c,int add)
 {
 
     /*
@@ -222,7 +272,7 @@ void defaultInput(customer *c)
         strcpy(c->name, "Baibhav Kumar");
         strcpy(c->email, "baibhav.kumar@email.com");
         strcpy(c->password, "Baibhav@123");
-        c->n = 5;
+        c->n = 5+add;
         c->directory = (struct contact *)malloc((c->n) * sizeof(struct contact));
 
         strcpy(((c->directory) + 0)->name, "Pratik Prakhar");
