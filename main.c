@@ -55,6 +55,9 @@ void showContacts(customer *c);
 void searchContact(customer *c);
 void addContact(customer *c);
 void editContact(customer *c,int choose);
+int chooseBetweenTwo(int a, int b);
+void contactDetails( customer *c, int choose);
+
 
 int main()
 {
@@ -102,7 +105,8 @@ void mainMenu(customer *c){
 
     printf("enter a number from below\n");
     printf("1 Show Contacts\n2 search contacts\n3 add contacts\n0 exit\n");
-    int ch = getch() - 48;
+    
+    int ch = getch() -48 ;
 
     if(ch == 1)
         showContacts(c);
@@ -153,16 +157,24 @@ void showContacts(customer *c){
 
 void contactDetails( customer *c, int choose){
 
-    system("clear");
-    system("cls");
-    printf("\nCONTACT DETAILS :- \n\n");
-    printf("Name - %s\nNumber - %s\nEmail - %s\n\n\n",((c->directory)+(choose-1))->name,((c->directory)+(choose-1))->number,((c->directory)+(choose-1))->email);
-    printf("1 edit contact\t0 return\n\n");
-    int ch = chooseBetweenTwo(0,1);
-    if(ch ==1)
-        editContact(c,choose-1);
-    else
+    if(choose <= c->n){
+        system("clear");
+        system("cls");
+        printf("\nCONTACT DETAILS :- \n\n");
+        printf("Name - %s\nNumber - %s\nEmail - %s\n\n\n",((c->directory)+(choose-1))->name,((c->directory)+(choose-1))->number,((c->directory)+(choose-1))->email);
+        printf("1 edit contact\t0 return\n\n");
+        int ch = chooseBetweenTwo(0,1);
+        if(ch ==1)
+            editContact(c,choose);
+        else
+            showContacts(c);
+    }
+    else {
+        printf("\n\nthere is no contact of that number.");
+        printf("\ntry again once more\n\n");
+        sleep(2);
         showContacts(c);
+    }
 }
 
 void editContact(customer *c, int choose){
@@ -237,7 +249,7 @@ void searchContact(customer *c){
 
 void addContact(customer *c){
    
-     defaultInput(c,1);
+    defaultInput(c,1);
 
     char name[20], number[11], email[30];
     printf("\t\t\t\t\tAdd Contact");
@@ -248,11 +260,22 @@ void addContact(customer *c){
     printf("\nEmail : ");
     gets(email);
 
-        strcpy(((c->directory) + 4 + 1)->name,name);
-        strcpy(((c->directory) + 4 + 1)->email,email);
-        strcpy(((c->directory) + 4 + 1)->number,number);
+    strcpy(((c->directory) + 4 + 1)->name,name);
+    strcpy(((c->directory) + 4 + 1)->email,email);
+    strcpy(((c->directory) + 4 + 1)->number,number);
 
-        mainMenu(c);
+    mainMenu(c);
+}
+
+void searchByName(){
+
+    system("cls");
+    system("clear");
+    printf("SEARCH CONTACTS:\n\n\n");
+
+    printf("enter the name:");
+    char name;
+    scanf("%s",&name);
 }
 
 customer *loginAuthentication(customer c[])
@@ -412,7 +435,6 @@ int chooseBetweenTwo(int a, int b){
         }
     }
 }
-
 
 
 
