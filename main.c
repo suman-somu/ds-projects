@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <windows.h>
+#include <stdbool.h>
+#include <conio.h>
 // #include <termios.h>
 #include <unistd.h>
 
@@ -31,12 +33,14 @@ int getche(void)
     return ch;
 }
 */
+
 typedef struct contact
 {
     char name[50];
     char email[41];
     char number[11];
 } contact;
+
 typedef struct customers
 {
     char name[50];
@@ -50,44 +54,33 @@ void gotoxy(int x, int y);
 void titleScreen();
 void screenHeading();
 void defaultInput(customer *c, int add);
-customer *loginAuthentication(customer c[]);
-void mainMenu();
-void showContacts(customer *c);
-void searchContact(customer *c);
-void addContact(customer *c);
-void editContact(customer *c, int choose);
 int chooseBetweenTwo(int a, int b);
+
+customer *loginAuthentication(customer c[]);
+customer *checkEmail(customer *c);
+bool checkPassword(customer *c);
+
+void mainMenu();
+
+void showContacts(customer *c);
+
+void searchContact(customer *c);
+
+void addContact(customer *c);
+
+void editContact(customer *c, int choose);
+
 void contactDetails(customer *c, int choose);
 
 int main()
 {
     customer c[3];
     defaultInput(c, 0);
-    /*
-    Demo of how to access the input.
-
-    printf("%s  ", (c->directory)->name); Accessing the name of first contact of first customer.
-    printf("%s  ", (c->directory)->number); Accessing the number of first contact of first customer.
-    printf("%s  ", (c->directory)->email); Accessing the email of first contact of first customer.
-    printf("\n\n");
-
-    printf("%s  ", ((c->directory)+1)->name); Accessing the name of second contact of first customer.
-    printf("%s  ", ((c->directory)+1)->number);
-    printf("%s  ", ((c->directory)+1)->email);
-    printf("\n\n");
-
-    printf("%s  ", ((c+1)->directory)->name); Accessing the name of first contact of second customer.
-    printf("%s  ", ((c+1)->directory)->number);
-    printf("%s  ", ((c+1)->directory)->email);
-    printf("\n\n");
-
-    */
-
     titleScreen();
-    // screenHeading();
-    //  customer *c = loginAuthentication(c);
 
-    // mainMenu(c);
+    customer *current = loginAuthentication(c);
+
+    mainMenu(current);
 }
 
 void mainMenu(customer *c)
@@ -293,7 +286,77 @@ void searchByName()
 
 customer *loginAuthentication(customer c[])
 {
-    printf("\nPrinting from login authentication function.\n");
+    screenHeading();
+    printf("Login authentication...");
+    sleep(2);
+
+    printf("\n\nPress any key to login...");
+
+    customer *tempCustomer = checkEmail(c);
+
+    if (checkPassword(tempCustomer))
+        return (tempCustomer);
+}
+
+customer *checkEmail(customer *c)
+{
+
+    screenHeading();
+
+    printf("E-Mail Authentication:-");
+
+    char tempEmail[41];
+
+    printf("\n\nE-Mail ID: ");
+    scanf("%s", tempEmail);
+
+    for (int i = 0; i < 3; i++)
+    {
+        if (strcmpi(tempEmail, (c + i)->email) == 0)
+            return (c + i);
+    }
+
+    // If E-mail not found
+    gotoxy(70, 16);
+    printf("OOPS! Email not found!");
+    gotoxy(61, 18);
+    printf("Press any key to enter email ID again...");
+    getch();
+    return (checkEmail(c));
+}
+
+bool checkPassword(customer *c)
+{
+
+    screenHeading();
+
+    printf("Password Authentication:-");
+
+    char tempPassword[13] = {};
+
+    printf("\n\nPassword: ");
+    int p = 0;
+    do
+    {
+        tempPassword[p] = getch();
+        if (tempPassword[p] != '\r')
+        {
+            printf("*");
+        }
+        p++;
+    } while (tempPassword[p - 1] != '\r');
+    tempPassword[p - 1] = '\0';
+
+    if (strcmp(tempPassword, (c)->password) == 0)
+        return true;
+
+    // If password not found
+    gotoxy(70, 16);
+    printf("OOPS! Incorrect password!");
+    gotoxy(61, 18);
+    printf("Press any key to enter password again...");
+    getch();
+    return (checkPassword(c));
 }
 
 void defaultInput(customer *c, int add)
