@@ -81,9 +81,9 @@ int main()
 
     titleScreen();
 
-    customer *current = loginAuthentication(c);
+    // customer *current = loginAuthentication(c);
 
-    mainMenu(current);
+    // mainMenu(c);
 
 }
 
@@ -93,11 +93,6 @@ void mainMenu(customer *c)
     system("clear");
     system("cls");
     printf("\n\nentered main menu\n\n");
-
-    // implement logic to call
-    // 1 showContacts()
-    // 2 searchContact()
-    // 3 addContact()
 
     printf("enter a number from below\n");
     printf("1 Show Contacts\n2 search contacts\n3 add contacts\n0 exit\n");
@@ -189,7 +184,7 @@ void contactDetails(customer *c, int choose, int fn)
 void editContact(customer *c, int choose, int fn)
 {
 
-    char name[20], number[11], email[30];
+    char name[50], number[11], email[41];
 
     printf("\t\t\t\t\t\n\nEdit Contact");
     printf("\n 1.Name\n 2.Number\n 3.Email\n 4.Cancel\n\n");
@@ -364,9 +359,8 @@ void searchByNumber(customer *c){
 customer *loginAuthentication(customer c[])
 {
     screenHeading();
-    printf("Login authentication...");
-    sleep(2);
-
+    printf("Login authentication...\n\n");
+    // sleep(2);
     printf("\n\nPress any key to login...");
 
     customer *tempCustomer = checkEmail(c);
@@ -389,7 +383,7 @@ customer *checkEmail(customer *c)
 
     for (int i = 0; i < 3; i++)
     {
-        if (strcmpi(tempEmail, (c + i)->email) == 0)
+        if (strcmp(tempEmail, (c + i)->email) == 0)
             return (c + i);
     }
 
@@ -508,8 +502,8 @@ void defaultInput(customer *c, int add)
     {
         // Entering data for 3rd customer.
         strcpy((c + 2)->name, "Suman Sahoo");
-        strcpy((c + 2)->email, "suman.sahoo@email.com");
-        strcpy((c + 2)->password, "Suman@123");
+        strcpy((c + 2)->email, "suman@gmail.com");
+        strcpy((c + 2)->password, "123");
         (c + 2)->n = 7;
         (c + 2)->directory = (struct contact *)malloc(((c + 2)->n) * sizeof(struct contact));
 
@@ -591,6 +585,7 @@ void titleScreen()
     printf(".");
     sleep(1);
     printf(".");
+    // getch();
 }
 
 void screenHeading()
@@ -647,3 +642,5 @@ int chooseBetweenTwo(int a, int b)
 
 // NOTE
 // remove system(cls) or system(clear) expression in the title function in your system while presentation
+
+// functionality to check number and name before adding
