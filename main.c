@@ -251,9 +251,14 @@ void searchContact(customer *c)
     system("cls");
     system("clear");
     screenHeading();
-    printf("SEARCH CONTACTS:\n\n\n");
-    printf("1\tby name\n2\tby number\n");
-    printf("\n\n0\treturn to menu");
+    gotoxy(70,10);
+    printf("SEARCH CONTACTS:");
+    gotoxy(60,13);
+    printf("1\tBy name");
+    gotoxy(60,15);
+    printf("2\tBy number");
+    gotoxy(60,18);
+    printf("0\treturn to menu");
     int ch = getch() - 48;
 
     switch (ch)
@@ -577,19 +582,19 @@ void titleScreen()
     printf("__________________________");
 
     gotoxy(70, 25);
-    printf("Built with passion by Group-11:");
+    printf("BUILT WITH PASSION BY GROUP-11:");
 
-    gotoxy(72, 28);
+    gotoxy(70, 28);
     printf("1. Baibhav Kumar;");
     gotoxy(90, 28);
     printf("ID: B421016.");
 
-    gotoxy(72, 30);
+    gotoxy(70, 30);
     printf("2. Hemant Sah;");
     gotoxy(90, 30);
     printf("ID: B421025.");
 
-    gotoxy(72, 32);
+    gotoxy(70, 32);
     printf("3. Suman Sahoo;");
     gotoxy(90, 32);
     printf("ID: B421056.");
