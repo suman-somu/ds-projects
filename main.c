@@ -3,35 +3,35 @@
 #include <string.h>
 #include <stdbool.h>
 #include <unistd.h>
-#include <conio.h>
-#include <windows.h>
-// #include <termios.h>
+// #include <conio.h>
+// #include <windows.h>
+#include <termios.h>
 
 // return 0-9 as 48-57
-// int getch(void)
-// {
-//     struct termios oldattr, newattr;
-//     int ch;
-//     tcgetattr( STDIN_FILENO, &oldattr );
-//     newattr = oldattr;
-//     newattr.c_lflag &= ~( ICANON | ECHO );
-//     tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
-//     ch = getchar();
-//     tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
-//     return ch;
-// }
-// int getche(void)
-// {
-//     struct termios oldattr, newattr;
-//     int ch;
-//     tcgetattr( STDIN_FILENO, &oldattr );
-//     newattr = oldattr;
-//     newattr.c_lflag &= ~( ICANON );
-//     tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
-//     ch = getchar();
-//     tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
-//     return ch;
-// }
+int getch(void)
+{
+    struct termios oldattr, newattr;
+    int ch;
+    tcgetattr( STDIN_FILENO, &oldattr );
+    newattr = oldattr;
+    newattr.c_lflag &= ~( ICANON | ECHO );
+    tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
+    ch = getchar();
+    tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
+    return ch;
+}
+int getche(void)
+{
+    struct termios oldattr, newattr;
+    int ch;
+    tcgetattr( STDIN_FILENO, &oldattr );
+    newattr = oldattr;
+    newattr.c_lflag &= ~( ICANON );
+    tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
+    ch = getchar();
+    tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
+    return ch;
+}
 
 typedef struct contact
 {
@@ -88,12 +88,19 @@ int main()
 void mainMenu(customer *c)
 {
 
-    system("cls");
-    system("clear");
-    printf("\n\nentered main menu\n\n");
-
-    printf("enter a number from below\n");
-    printf("1 Show Contacts\n2 search contacts\n3 add contacts\n0 exit\n");
+    screenHeading();
+    gotoxy(60,10);
+    printf("MAIN MENU");
+    gotoxy(60,13);
+    printf("Enter a function to perform");
+    gotoxy(60,15);
+    printf("1\t Show Contacts");
+    gotoxy(60,16);
+    printf("2\t Search Contacts");
+    gotoxy(60,17);
+    printf("3\t Add contacts");
+    gotoxy(60,18);
+    printf("0\t Exit");
 
     int ch = getch() - 48;
 
@@ -127,6 +134,7 @@ void showContacts(customer *c)
 
     system("cls");
     system("clear");
+    screenHeading();
     // gotoxy(50,10);
     // printf("S.No");
     // gotoxy(53,10);
@@ -242,6 +250,7 @@ void searchContact(customer *c)
 
     system("cls");
     system("clear");
+    screenHeading();
     printf("SEARCH CONTACTS:\n\n\n");
     printf("1\tby name\n2\tby number\n");
     printf("\n\n0\treturn to menu");
@@ -417,19 +426,10 @@ bool checkPassword(customer *c)
 
     printf("\n\nPassword: ");
     int p = 0;
-    // do
-    // {
-    //     tempPassword[p] = getch();
-    //     if (tempPassword[p] != '\r' )
-    //     {
-    //         printf("*");
-    //     }
-    //     p++;
-    // } while (tempPassword[p - 1] != '\r' );
-    // tempPassword[p - 1] = '\0';
 
     char ch = getch();
-    while(ch!='\r' && ch!='\n' && p<12){
+    while(ch!=13 && ch!=10 && p<12){
+        // printf("%d",ch);
         tempPassword[p++]=ch;
         printf("*");
         ch = getch();
