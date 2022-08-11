@@ -1,38 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-// #include <windows.h>
+#include <windows.h>
 #include <stdbool.h>
-// #include <conio.h>
-#include <termios.h>
+#include <conio.h>
+//#include <termios.h>
 #include <unistd.h>
 
 // return 0-9 as 48-57
-int getch(void)
-{
-    struct termios oldattr, newattr;
-    int ch;
-    tcgetattr( STDIN_FILENO, &oldattr );
-    newattr = oldattr;
-    newattr.c_lflag &= ~( ICANON | ECHO );
-    tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
-    ch = getchar();
-    tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
-    return ch;
-}
-int getche(void)
-{
-    struct termios oldattr, newattr;
-    int ch;
-    tcgetattr( STDIN_FILENO, &oldattr );
-    newattr = oldattr;
-    newattr.c_lflag &= ~( ICANON );
-    tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
-    ch = getchar();
-    tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
-    return ch;
-}
+// int getch(void)
+// {
+//     struct termios oldattr, newattr;
+//     int ch;
+//     tcgetattr( STDIN_FILENO, &oldattr );
+//     newattr = oldattr;
+//     newattr.c_lflag &= ~( ICANON | ECHO );
+//     tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
+//     ch = getchar();
+//     tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
+//     return ch;
+// }
+// int getche(void)
+// {
+//     struct termios oldattr, newattr;
+//     int ch;
+//     tcgetattr( STDIN_FILENO, &oldattr );
+//     newattr = oldattr;
+//     newattr.c_lflag &= ~( ICANON );
+//     tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
+//     ch = getchar();
+//     tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
+//     return ch;
+// }
 
 typedef struct contact
 {
@@ -90,7 +89,7 @@ int main()
 void mainMenu(customer *c)
 {
 
-    system("clear");
+    system("cls");
     system("cls");
     printf("\n\nentered main menu\n\n");
 
@@ -108,7 +107,7 @@ void mainMenu(customer *c)
     else if (ch == 0)
     {
         system("cls");
-        system("clear");
+        system("cls");
         gotoxy(80, 25);
         printf("THANK YOU FOR USING OUR SYSTEM.");
         gotoxy(83, 28);
@@ -127,7 +126,7 @@ void mainMenu(customer *c)
 void showContacts(customer *c)
 {
 
-    system("clear");
+    system("cls");
     system("cls");
     printf("\nS.No \t CONTACT LIST \t\t Phone No. :-\n\n");
     int numberOfContacts = c->n;
@@ -154,7 +153,7 @@ void contactDetails(customer *c, int choose, int fn)
 
     if (choose <= c->n)
     {
-        system("clear");
+        system("cls");
         system("cls");
         printf("\nCONTACT DETAILS :- \n\n");
         printf("Name - %s\nNumber - %s\nEmail - %s\n\n\n", ((c->directory) + (choose - 1))->name, ((c->directory) + (choose - 1))->number, ((c->directory) + (choose - 1))->email);
@@ -230,7 +229,7 @@ void searchContact(customer *c)
     // search by name or by number
 
     system("cls");
-    system("clear");
+    system("cls");
     printf("SEARCH CONTACTS:\n\n\n");
     printf("1\tby name\n2\tby number\n");
     printf("\n\n0\treturn to menu");
@@ -259,8 +258,7 @@ void searchContact(customer *c)
 
 void addContact(customer *c)
 {
-
-    defaultInput(c, 1);
+    screenHeading();
 
     char name[20], number[11], email[30];
     printf("\t\t\t\t\tAdd Contact");
@@ -282,7 +280,7 @@ void searchByName(customer *c)
 {
 
     system("cls");
-    system("clear");
+    system("cls");
     printf("SEARCH CONTACT :\n\n\n");
 
     printf("enter the name:");
@@ -321,7 +319,7 @@ void searchByName(customer *c)
 
 void searchByNumber(customer *c){
     system("cls");
-    system("clear");
+    system("cls");
     printf("SEARCH CONTACT :\n\n\n");
 
     printf("enter the number:");
@@ -543,7 +541,7 @@ void titleScreen()
     // This function presents the first screen before the audience.
     // It mentions the project name and developers name.
 
-    system("clear");
+    system("cls");
     system("cls");
 
     gotoxy(71, 5);
@@ -592,10 +590,10 @@ void screenHeading()
 {
 
     // Thus function prints a heading on every screen.
-    // Whenever you need to clear the screen, call this function.
+    // Whenever you need to cls the screen, call this function.
 
     system("cls");
-    system("clear");
+    system("cls");
 
     gotoxy(71, 1);
     printf("__________________________");
