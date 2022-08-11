@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <windows.h>
+// #include <windows.h>
 #include <stdbool.h>
-#include <conio.h>
-// #include <termios.h>
+// #include <conio.h>
+#include <termios.h>
 #include <unistd.h>
 
 // return 0-9 as 48-57
@@ -68,7 +68,7 @@ void searchContact(customer *c);
 
 void addContact(customer *c);
 
-void editContact(customer *c, int choose);
+void editContact(customer *c, int choose, int fn);
 
 int chooseBetweenTwo(int a, int b);
 
@@ -166,7 +166,7 @@ void contactDetails(customer *c, int choose, int fn)
         printf("1 edit contact\t0 return\n\n");
         int ch = chooseBetweenTwo(0, 1);
         if (ch == 1)
-            editContact(c, choose);
+            editContact(c, choose-1,fn);
         else{
             if(fn==1){
                 showContacts(c);
@@ -186,7 +186,7 @@ void contactDetails(customer *c, int choose, int fn)
     }
 }
 
-void editContact(customer *c, int choose)
+void editContact(customer *c, int choose, int fn)
 {
 
     char name[20], number[11], email[30];
@@ -223,7 +223,7 @@ void editContact(customer *c, int choose)
     {
         system("cls");
         printf("\nYour contact has not been edited\n");
-        contactDetails(c,choose,1);
+        contactDetails(c,choose,fn);
     }
     printf("\nPress any Key to go back to main menu");
     getch();
