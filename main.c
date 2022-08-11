@@ -216,7 +216,7 @@ void editContact(customer *c, int choose, int fn)
     else if (ch == 4)
     {
         system("cls");
-        system("clear")
+        system("clear");
         printf("\nYour contact has not been edited\n");
         contactDetails(c,choose,fn);
     }
