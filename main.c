@@ -80,9 +80,9 @@ int main()
 
     titleScreen();
 
-    // customer *current = loginAuthentication(c);
+    customer *current = loginAuthentication(c);
 
-    // mainMenu(c);
+    mainMenu(c);
 
 }
 
@@ -175,7 +175,6 @@ void contactDetails(customer *c, int choose, int fn)
     {
         printf("\n\nthere is no contact of that number.");
         printf("\ntry again once more\n\n");
-        sleep(2);
         showContacts(c);
     }
 }
@@ -358,12 +357,11 @@ void searchByNumber(customer *c){
 customer *loginAuthentication(customer c[])
 {
     screenHeading();
-    printf("Login authentication...\n\n");
-    // sleep(2);
+    printf("\n\nLogin authentication...\n\n");
     printf("\n\nPress any key to login...");
 
     customer *tempCustomer = checkEmail(c);
-
+    getchar();
     if (checkPassword(tempCustomer))
         return (tempCustomer);
 }
@@ -379,6 +377,7 @@ customer *checkEmail(customer *c)
 
     printf("\n\nE-Mail ID: ");
     scanf("%s", tempEmail);
+    // gets(tempEmail);
 
     for (int i = 0; i < 3; i++)
     {
@@ -406,16 +405,23 @@ bool checkPassword(customer *c)
 
     printf("\n\nPassword: ");
     int p = 0;
-    do
-    {
-        tempPassword[p] = getch();
-        if (tempPassword[p] != '\r')
-        {
-            printf("*");
-        }
-        p++;
-    } while (tempPassword[p - 1] != '\r');
-    tempPassword[p - 1] = '\0';
+    // do
+    // {
+    //     tempPassword[p] = getch();
+    //     if (tempPassword[p] != '\r' )
+    //     {
+    //         printf("*");
+    //     }
+    //     p++;
+    // } while (tempPassword[p - 1] != '\r' );
+    // tempPassword[p - 1] = '\0';
+
+    char ch = getch();
+    while(ch!='\r' && ch!='\n' && p<12){
+        tempPassword[p++]=ch;
+        printf("*");
+        ch = getch();
+    }
 
     if (strcmp(tempPassword, (c)->password) == 0)
         return true;
@@ -578,13 +584,10 @@ void titleScreen()
 
     gotoxy(10, 39);
     printf("Loading");
-    sleep(1);
     printf(".");
-    sleep(1);
     printf(".");
-    sleep(1);
     printf(".");
-    // getch();
+    getch();
 }
 
 void screenHeading()
