@@ -1,37 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// #include <windows.h>
 #include <stdbool.h>
-// #include <conio.h>
-#include <termios.h>
 #include <unistd.h>
+#include <conio.h>
+#include <windows.h>
+// #include <termios.h>
 
 // return 0-9 as 48-57
-int getch(void)
-{
-    struct termios oldattr, newattr;
-    int ch;
-    tcgetattr( STDIN_FILENO, &oldattr );
-    newattr = oldattr;
-    newattr.c_lflag &= ~( ICANON | ECHO );
-    tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
-    ch = getchar();
-    tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
-    return ch;
-}
-int getche(void)
-{
-    struct termios oldattr, newattr;
-    int ch;
-    tcgetattr( STDIN_FILENO, &oldattr );
-    newattr = oldattr;
-    newattr.c_lflag &= ~( ICANON );
-    tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
-    ch = getchar();
-    tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
-    return ch;
-}
+// int getch(void)
+// {
+//     struct termios oldattr, newattr;
+//     int ch;
+//     tcgetattr( STDIN_FILENO, &oldattr );
+//     newattr = oldattr;
+//     newattr.c_lflag &= ~( ICANON | ECHO );
+//     tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
+//     ch = getchar();
+//     tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
+//     return ch;
+// }
+// int getche(void)
+// {
+//     struct termios oldattr, newattr;
+//     int ch;
+//     tcgetattr( STDIN_FILENO, &oldattr );
+//     newattr = oldattr;
+//     newattr.c_lflag &= ~( ICANON );
+//     tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
+//     ch = getchar();
+//     tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
+//     return ch;
+// }
 
 typedef struct contact
 {
@@ -80,9 +80,9 @@ int main()
 
     titleScreen();
 
-    // customer *current = loginAuthentication(c);
+    customer *current = loginAuthentication(c);
 
-    // mainMenu(c);
+    mainMenu(c);
 
 }
 
