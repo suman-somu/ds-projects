@@ -52,13 +52,14 @@ typedef struct customers
 void gotoxy(int x, int y);
 void titleScreen();
 void screenHeading();
-void defaultInput(customer *c, int add);
+void defaultInput(customer *c);
+int chooseBetweenTwo(int a, int b, int c);
 
 customer *loginAuthentication(customer c[]);
 customer *checkEmail(customer *c);
 bool checkPassword(customer *c);
 
-void mainMenu();
+void mainMenu(customer *c);
 
 void showContacts(customer *c);
 
@@ -72,11 +73,14 @@ int chooseBetweenTwo(int a, int b, int c);
 
 void contactDetails(customer *c, int choose, int fn);
 
+bool checkNameValid(char *name);
+bool checkNumberValid(char *number);
+bool checkEmailValid(char *email);
+
 int main()
 {
     customer c[3];
-    defaultInput(c, 0);
-
+    defaultInput(c);
     titleScreen();
 
     customer *current = loginAuthentication(c);
@@ -87,12 +91,19 @@ int main()
 void mainMenu(customer *c)
 {
 
-    system("clear");
-    system("cls");
-    printf("\n\nentered main menu\n\n");
-
-    printf("enter a number from below\n");
-    printf("1 Show Contacts\n2 search contacts\n3 add contacts\n0 exit\n");
+    screenHeading();
+    gotoxy(60,10);
+    printf("MAIN MENU");
+    gotoxy(60,13);
+    printf("Enter a function to perform");
+    gotoxy(60,15);
+    printf("1\t Show Contacts");
+    gotoxy(60,16);
+    printf("2\t Search Contacts");
+    gotoxy(60,17);
+    printf("3\t Add contacts");
+    gotoxy(60,18);
+    printf("0\t Exit");
 
     int ch = getch() - 48;
 
@@ -123,7 +134,6 @@ void mainMenu(customer *c)
 
 void showContacts(customer *c)
 {
-
     screenHeading();
 
     int m = 26; // side margins
@@ -195,7 +205,6 @@ void showContacts(customer *c)
         default:
             mainMenu(c);
     }
-
 }
 
 void contactDetails(customer *c, int choose, int fn)
@@ -311,10 +320,15 @@ void searchContact(customer *c)
     // search by name or by number
 
     system("clear");
-    system("cls");
-    printf("SEARCH CONTACTS:\n\n\n");
-    printf("1\tby name\n2\tby number\n");
-    printf("\n\n0\treturn to menu");
+    screenHeading();
+    gotoxy(70,10);
+    printf("SEARCH CONTACTS:");
+    gotoxy(60,13);
+    printf("1\tBy name");
+    gotoxy(60,15);
+    printf("2\tBy number");
+    gotoxy(60,18);
+    printf("0\treturn to menu");
     int ch = getch() - 48;
 
     switch (ch)
@@ -341,21 +355,72 @@ void searchContact(customer *c)
 void addContact(customer *c)
 {
     screenHeading();
+    c->n=c->n+1;
+     c->directory = (struct contact *)realloc(c->directory,c->n * sizeof(struct contact));
+    printf("Add New Contacts:-");
 
-    char name[20], number[11], email[30];
-    printf("\t\t\t\t\tAdd Contact");
-    printf("\nName : ");
-    gets(name);
-    printf("\nNumber : ");
-    gets(number);
-    printf("\nEmail : ");
-    gets(email);
+    char tempName[50], tempNumber[11], tempEmail[41];
 
-    strcpy(((c->directory) + 4 + 1)->name, name);
-    strcpy(((c->directory) + 4 + 1)->email, email);
-    strcpy(((c->directory) + 4 + 1)->number, number);
+    Name:
+    printf("\nEnter Name : ");
+    gets(tempName);
+    if(checkNameValid(tempName)){
+     strcpy(((c->directory) + c->n-1)->name,tempName);
+    }else{
+        printf("\nInvalid Name");
+        goto Name;
+    }
+    
+    Number:
+    printf("\nEnter Number : ");
+    gets(tempNumber);
+    if(checkNumberValid(tempNumber)){
+    strcpy(((c->directory) + c->n-1)->number,tempNumber);
+    }else{
+        printf("\nInvalid Number");
+        goto Number;
+    }
 
+    Email:
+    printf("\nEnter Email : ");
+    gets(tempEmail);
+    if(checkEmailValid(tempEmail)){
+    strcpy(((c->directory) + c->n-1)->email,tempEmail);
+    }else{
+        printf("\nInvalid Email");
+        goto Email;
+    }
+
+    printf("Your Contact has been save\n");
+    printf("Press Any Key To go Back To Main Menu\n");
+    getch();
     mainMenu(c);
+    
+}
+
+bool checkNameValid(char *name){
+
+    if(!((*name <= 90 && *name >= 65) || (*name <= 122 && *name >= 97) || (*name == '_')))
+        return false;
+
+    if(strlen(name) == 0)
+        return false;
+    
+}
+bool checkNumberValid(char *number){
+    if(!(strlen(number)==10)){
+        return false;
+    }
+    
+}
+bool checkEmailValid(char *email){
+int len=strlen(email);
+
+char *last_10=&email[len-10];
+if(strcmp(last_10,"@gmail.com")==0){
+    return true;
+}
+return false;
 }
 
 void searchByName(customer *c)
@@ -502,21 +567,11 @@ bool checkPassword(customer *c)
 
     printf("\n\nPassword: ");
     int p = 0;
-    // do
-    // {
-    //     tempPassword[p] = getch();
-    //     if (tempPassword[p] != '\r' )
-    //     {
-    //         printf("*");
-    //     }
-    //     p++;
-    // } while (tempPassword[p - 1] != '\r' );
-    // tempPassword[p - 1] = '\0';
 
     char ch = getch();
-    while (ch != '\r' && ch != '\n' && p < 12)
-    {
-        tempPassword[p++] = ch;
+    while(ch!=13 && ch!=10 && p<12){
+        // printf("%d",ch);
+        tempPassword[p++]=ch;
         printf("*");
         ch = getch();
     }
@@ -533,19 +588,17 @@ bool checkPassword(customer *c)
     return (checkPassword(c));
 }
 
-void defaultInput(customer *c, int add)
+void defaultInput(customer *c)
 {
-
     /*
     This function enters the default input into the program.
     */
-
     {
         // Entering data for 1st customer.
         strcpy(c->name, "Baibhav Kumar");
         strcpy(c->email, "baibhav.kumar@email.com");
         strcpy(c->password, "Baibhav@123");
-        c->n = 5 + add;
+        c->n = 5;
         c->directory = (struct contact *)malloc((c->n) * sizeof(struct contact));
 
         strcpy(((c->directory) + 0)->name, "Pratik Prakhar");
@@ -663,19 +716,19 @@ void titleScreen()
     printf("__________________________");
 
     gotoxy(70, 25);
-    printf("Built with passion by Group-11:");
+    printf("BUILT WITH PASSION BY GROUP-11:");
 
-    gotoxy(72, 28);
+    gotoxy(70, 28);
     printf("1. Baibhav Kumar;");
     gotoxy(90, 28);
     printf("ID: B421016.");
 
-    gotoxy(72, 30);
+    gotoxy(70, 30);
     printf("2. Hemant Sah;");
     gotoxy(90, 30);
     printf("ID: B421025.");
 
-    gotoxy(72, 32);
+    gotoxy(70, 32);
     printf("3. Suman Sahoo;");
     gotoxy(90, 32);
     printf("ID: B421056.");
@@ -722,7 +775,6 @@ int chooseBetweenTwo(int a, int b, int c)
 {
 
     int ch = getch() - 48;
-    
     
     if (ch == -35 || ch == -38)
     {
