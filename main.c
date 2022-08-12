@@ -1,37 +1,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include <stdbool.h>
 #include <unistd.h>
-// #include <conio.h>
-// #include <windows.h>
-#include <termios.h>
+#include <conio.h>
+#include <windows.h>
+//#include <termios.h>
 
 // return 0-9 as 48-57
-int getch(void)
-{
-    struct termios oldattr, newattr;
-    int ch;
-    tcgetattr( STDIN_FILENO, &oldattr );
-    newattr = oldattr;
-    newattr.c_lflag &= ~( ICANON | ECHO );
-    tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
-    ch = getchar();
-    tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
-    return ch;
-}
-int getche(void)
-{
-    struct termios oldattr, newattr;
-    int ch;
-    tcgetattr( STDIN_FILENO, &oldattr );
-    newattr = oldattr;
-    newattr.c_lflag &= ~( ICANON );
-    tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
-    ch = getchar();
-    tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
-    return ch;
-}
+// int getch(void)
+// {
+//     struct termios oldattr, newattr;
+//     int ch;
+//     tcgetattr( STDIN_FILENO, &oldattr );
+//     newattr = oldattr;
+//     newattr.c_lflag &= ~( ICANON | ECHO );
+//     tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
+//     ch = getchar();
+//     tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
+//     return ch;
+// }
+// int getche(void)
+// {
+//     struct termios oldattr, newattr;
+//     int ch;
+//     tcgetattr( STDIN_FILENO, &oldattr );
+//     newattr = oldattr;
+//     newattr.c_lflag &= ~( ICANON );
+//     tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
+//     ch = getchar();
+//     tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
+//     return ch;
+// }
 
 typedef struct contact
 {
@@ -52,13 +53,15 @@ typedef struct customers
 void gotoxy(int x, int y);
 void titleScreen();
 void screenHeading();
-void defaultInput(customer *c, int add);
+
+void defaultInput(customer *c);
+int chooseBetweenTwo(int a, int b);
 
 customer *loginAuthentication(customer c[]);
 customer *checkEmail(customer *c);
 bool checkPassword(customer *c);
 
-void mainMenu();
+void mainMenu(customer *c);
 
 void showContacts(customer *c);
 
@@ -72,17 +75,19 @@ int chooseBetweenTwo(int a, int b, int c);
 
 void contactDetails(customer *c, int choose, int fn);
 
+bool checkNameValid(char *name);
+bool checkNumberValid(char *number);
+bool checkEmailValid(char *email);
+
 int main()
 {
     customer c[3];
-    defaultInput(c, 0);
-
+    defaultInput(c);
     titleScreen();
 
     customer *current = loginAuthentication(c);
 
     mainMenu(c);
-
 }
 
 void mainMenu(customer *c)
@@ -285,21 +290,72 @@ void searchContact(customer *c)
 void addContact(customer *c)
 {
     screenHeading();
+    c->n=c->n+1;
+     c->directory = (struct contact *)realloc(c->directory,c->n * sizeof(struct contact));
+    printf("Add New Contacts:-");
 
-    char name[20], number[11], email[30];
-    printf("\t\t\t\t\tAdd Contact");
-    printf("\nName : ");
-    gets(name);
-    printf("\nNumber : ");
-    gets(number);
-    printf("\nEmail : ");
-    gets(email);
+    char tempName[50], tempNumber[11], tempEmail[41];
 
-    strcpy(((c->directory) + 4 + 1)->name, name);
-    strcpy(((c->directory) + 4 + 1)->email, email);
-    strcpy(((c->directory) + 4 + 1)->number, number);
+    Name:
+    printf("\nEnter Name : ");
+    gets(tempName);
+    if(checkNameValid(tempName)){
+     strcpy(((c->directory) + c->n-1)->name,tempName);
+    }else{
+        printf("\nInvalid Name");
+        goto Name;
+    }
+    
+    Number:
+    printf("\nEnter Number : ");
+    gets(tempNumber);
+    if(checkNumberValid(tempNumber)){
+    strcpy(((c->directory) + c->n-1)->number,tempNumber);
+    }else{
+        printf("\nInvalid Number");
+        goto Number;
+    }
 
+    Email:
+    printf("\nEnter Email : ");
+    gets(tempEmail);
+    if(checkEmailValid(tempEmail)){
+    strcpy(((c->directory) + c->n-1)->email,tempEmail);
+    }else{
+        printf("\nInvalid Email");
+        goto Email;
+    }
+
+    printf("Your Contact has been save\n");
+    printf("Press Any Key To go Back To Main Menu\n");
+    getch();
     mainMenu(c);
+    
+}
+
+bool checkNameValid(char *name){
+
+    if(!((*name <= 90 && *name >= 65) || (*name <= 122 && *name >= 97) || (*name == '_')))
+        return false;
+
+    if(strlen(name) == 0)
+        return false;
+    
+}
+bool checkNumberValid(char *number){
+    if(!(strlen(number)==10)){
+        return false;
+    }
+    
+}
+bool checkEmailValid(char *email){
+int len=strlen(email);
+
+char *last_10=&email[len-10];
+if(strcmp(last_10,"@gmail.com")==0){
+    return true;
+}
+return false;
 }
 
 void searchByName(customer *c)
@@ -452,19 +508,17 @@ bool checkPassword(customer *c)
     return (checkPassword(c));
 }
 
-void defaultInput(customer *c, int add)
+void defaultInput(customer *c)
 {
-
     /*
     This function enters the default input into the program.
     */
-
     {
         // Entering data for 1st customer.
         strcpy(c->name, "Baibhav Kumar");
         strcpy(c->email, "baibhav.kumar@email.com");
         strcpy(c->password, "Baibhav@123");
-        c->n = 5 + add;
+        c->n = 5;
         c->directory = (struct contact *)malloc((c->n) * sizeof(struct contact));
 
         strcpy(((c->directory) + 0)->name, "Pratik Prakhar");
