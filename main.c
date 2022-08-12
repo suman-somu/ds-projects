@@ -3,35 +3,35 @@
 #include <string.h>
 #include <stdbool.h>
 #include <unistd.h>
-#include <conio.h>
-#include <windows.h>
-// #include <termios.h>
+// #include <conio.h>
+// #include <windows.h>
+#include <termios.h>
 
 // return 0-9 as 48-57
-// int getch(void)
-// {
-//     struct termios oldattr, newattr;
-//     int ch;
-//     tcgetattr( STDIN_FILENO, &oldattr );
-//     newattr = oldattr;
-//     newattr.c_lflag &= ~( ICANON | ECHO );
-//     tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
-//     ch = getchar();
-//     tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
-//     return ch;
-// }
-// int getche(void)
-// {
-//     struct termios oldattr, newattr;
-//     int ch;
-//     tcgetattr( STDIN_FILENO, &oldattr );
-//     newattr = oldattr;
-//     newattr.c_lflag &= ~( ICANON );
-//     tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
-//     ch = getchar();
-//     tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
-//     return ch;
-// }
+int getch(void)
+{
+    struct termios oldattr, newattr;
+    int ch;
+    tcgetattr( STDIN_FILENO, &oldattr );
+    newattr = oldattr;
+    newattr.c_lflag &= ~( ICANON | ECHO );
+    tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
+    ch = getchar();
+    tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
+    return ch;
+}
+int getche(void)
+{
+    struct termios oldattr, newattr;
+    int ch;
+    tcgetattr( STDIN_FILENO, &oldattr );
+    newattr = oldattr;
+    newattr.c_lflag &= ~( ICANON );
+    tcsetattr( STDIN_FILENO, TCSANOW, &newattr );
+    ch = getchar();
+    tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
+    return ch;
+}
 
 typedef struct contact
 {
@@ -238,10 +238,13 @@ void contactDetails(customer *c, int choose, int fn)
         gotoxy(50, 25);
         printf(">>");
 
+        printf("check 1");
         int ch = chooseBetweenTwo(1, 2, 3);
-        switch(choose){
+        printf("check 2");
+        switch(ch){
             case 1: {
                 editContact(c, choose, fn);
+                break;
             }
             case 2: {
                 screenHeading();
@@ -249,6 +252,7 @@ void contactDetails(customer *c, int choose, int fn)
                 printf("Returning to main menu");
                 getch();
                 mainMenu(c);
+                break;
             }
             default:{
                 if (fn == 1)
@@ -259,6 +263,7 @@ void contactDetails(customer *c, int choose, int fn)
                 {
                     searchContact(c);
                 }
+                break;
             }
         }
     }
@@ -407,20 +412,22 @@ bool checkNameValid(char *name){
         return false;
     
 }
+
 bool checkNumberValid(char *number){
     if(!(strlen(number)==10)){
         return false;
     }
     
 }
-bool checkEmailValid(char *email){
-int len=strlen(email);
 
-char *last_10=&email[len-10];
-if(strcmp(last_10,"@gmail.com")==0){
-    return true;
-}
-return false;
+bool checkEmailValid(char *email){
+    int len=strlen(email);
+
+    char *last_10=&email[len-10];
+    if(strcmp(last_10,"@gmail.com")==0){
+        return true;
+    }
+    return false;
 }
 
 void searchByName(customer *c)
