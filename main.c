@@ -202,7 +202,7 @@ void showContacts(customer *c)
             int choice;
             scanf("%d", &choice);
             getchar();
-            if(choice>=1 && choice<c->n){
+            if(choice>=1 && choice<=c->n){
                 contactDetails(c,choice-1,1);
             }
             else {
@@ -297,42 +297,42 @@ void editContact(customer *c, int choose, int fn)
     {
         getchar();
          Name:
-    printf("\nEnter Name : ");
-    gets(tempName);
-    if(checkNameValid(tempName)){
-     strcpy(((c->directory) + c->n-1)->name,tempName);
-    }else{
-        printf("\nInvalid Name");
-        goto Name;
-    }
+        printf("\nEnter Name : ");
+        gets(tempName);
+        if(checkNameValid(tempName)){
+        strcpy(((c->directory) + c->n-1)->name,tempName);
+        }else{
+            printf("\nInvalid Name");
+            goto Name;
+        }
         printf("Your name has been edited\n");
     }
     else if (ch == 2)
     {
         getchar();
         Number:
-    printf("\nEnter Number : ");
-    gets(tempNumber);
-    if(checkNumberValid(tempNumber)){
-    strcpy(((c->directory) + c->n-1)->number,tempNumber);
-    }else{
-        printf("\nInvalid Number");
-        goto Number;
-    }
+        printf("\nEnter Number : ");
+        gets(tempNumber);
+        if(checkNumberValid(tempNumber)){
+        strcpy(((c->directory) + c->n-1)->number,tempNumber);
+        }else{
+            printf("\nInvalid Number");
+            goto Number;
+        }
         printf("Your number has been edited\n");
     }
     else if (ch == 3)
     {
         getchar();
-         Email:
-    printf("\nEnter Email : ");
-    gets(tempEmail);
-    if(checkEmailValid(tempEmail)){
-    strcpy(((c->directory) + c->n-1)->email,tempEmail);
-    }else{
-        printf("\nInvalid Email");
-        goto Email;
-    }
+        Email:
+        printf("\nEnter Email : ");
+        gets(tempEmail);
+        if(checkEmailValid(tempEmail)){
+        strcpy(((c->directory) + c->n-1)->email,tempEmail);
+        }else{
+            printf("\nInvalid Email");
+            goto Email;
+        }
         printf("Your email has been edited\n");
     }
     else if (ch == 4)
@@ -341,8 +341,6 @@ void editContact(customer *c, int choose, int fn)
         system("cls");
         printf("\nYour contact has not been edited\n");
         contactDetails(c, choose + 1, fn);
-    }else{
-        printf("Invalid Number");
     }
     else {
         printf("wrong option\n");
