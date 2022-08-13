@@ -69,7 +69,7 @@ void addContact(customer *c);
 
 void editContact(customer *c, int choose, int fn);
 
-void deleteContact(customer *c);
+void deleteContact(customer *c, int choose);
 
 int chooseBetweenTwo(int a, int b, int c);
 
@@ -94,17 +94,17 @@ void mainMenu(customer *c)
 {
 
     screenHeading();
-    gotoxy(60,10);
+    gotoxy(60, 10);
     printf("MAIN MENU");
-    gotoxy(60,13);
+    gotoxy(60, 13);
     printf("Enter a function to perform");
-    gotoxy(60,15);
+    gotoxy(60, 15);
     printf("1\t Show Contacts");
-    gotoxy(60,16);
+    gotoxy(60, 16);
     printf("2\t Search Contacts");
-    gotoxy(60,17);
+    gotoxy(60, 17);
     printf("3\t Add contacts");
-    gotoxy(60,18);
+    gotoxy(60, 18);
     printf("0\t Exit");
 
     int ch = getch() - 48;
@@ -128,7 +128,7 @@ void mainMenu(customer *c)
     }
     else
     {
-        gotoxy(60,21);
+        gotoxy(60, 21);
         printf("wrong no. try again");
         getch();
         mainMenu(c);
@@ -177,47 +177,51 @@ void showContacts(customer *c)
     int i;
     for (i = 0; i < c->n; i++)
     {
-        gotoxy(m+3, 17+2*i);
-        printf("%d.", i+1);
+        gotoxy(m + 3, 17 + 2 * i);
+        printf("%d.", i + 1);
 
-        gotoxy(m+d+9, 17+2*i);
-        printf("%s", ((c->directory)+i)->name);
+        gotoxy(m + d + 9, 17 + 2 * i);
+        printf("%s", ((c->directory) + i)->name);
 
-        gotoxy(m+2*d+63, 17+2*i);
-        printf("+91-%s", ((c->directory)+i)->number);
+        gotoxy(m + 2 * d + 63, 17 + 2 * i);
+        printf("+91-%s", ((c->directory) + i)->number);
     }
 
-    gotoxy(m + 1, 17+2*i+3);
+    gotoxy(m + 1, 17 + 2 * i + 3);
     printf("Press:");
-    gotoxy(m+4, 17+2*i+4);
+    gotoxy(m + 4, 17 + 2 * i + 4);
     printf("1. Choose a particular contact from the above list.");
-    gotoxy(m+4, 17+2*i+5);
+    gotoxy(m + 4, 17 + 2 * i + 5);
     printf("0. Go back.");
-    gotoxy(m+1, 17+2*i+7);
+    gotoxy(m + 1, 17 + 2 * i + 7);
     printf(">>");
 
     int choose = chooseBetweenTwo(1, 0, 0);
-    switch(choose){
-        case 1: {
-            gotoxy(m+1, 17+2*i+9);
-            printf("Enter the desired serial number: ");
-            int choice;
-            scanf("%d", &choice);
-            getchar();
-            if(choice>=1 && choice<c->n){
-                contactDetails(c,choice-1,1);
-            }
-            else {
-                gotoxy(m+1, 17+2*i+11);
-                printf("NO CONTACT");
-                getch();
-                showContacts(c);
-            }
-            break;
+    switch (choose)
+    {
+    case 1:
+    {
+        gotoxy(m + 1, 17 + 2 * i + 9);
+        printf("Enter the desired serial number: ");
+        int choice;
+        scanf("%d", &choice);
+        getchar();
+        if (choice >= 1 && choice <= c->n)
+        {
+            contactDetails(c, choice - 1, 1);
         }
-        case 0: 
-            mainMenu(c);
-            break;
+        else
+        {
+            gotoxy(m + 1, 17 + 2 * i + 11);
+            printf("NO CONTACT");
+            getch();
+            showContacts(c);
+        }
+        break;
+    }
+    case 0:
+        mainMenu(c);
+        break;
     }
 }
 
@@ -236,7 +240,7 @@ void contactDetails(customer *c, int choose, int fn)
 
         gotoxy(50, 14);
         printf("Contact Number : +91-%s.", ((c->directory) + (choose))->number);
-        
+
         gotoxy(50, 16);
         printf("E-Mail ID : %s.", ((c->directory) + (choose))->email);
 
@@ -252,30 +256,32 @@ void contactDetails(customer *c, int choose, int fn)
         printf(">>");
 
         int ch = chooseBetweenTwo(1, 2, 0);
-        switch(ch){
-            case 1: {
-                editContact(c, choose, fn);
-                break;
+        switch (ch)
+        {
+        case 1:
+        {
+            editContact(c, choose, fn);
+            break;
+        }
+        case 2:
+        {
+            screenHeading();
+            deleteContact(c, choose + 1);
+            mainMenu(c);
+            break;
+        }
+        default:
+        {
+            if (fn == 1)
+            {
+                showContacts(c);
             }
-            case 2: {
-                screenHeading();
-                printf("Make delete function first.");
-                printf("Returning to show contacts");
-                getch();
-                contactDetails(c,choose,fn);
-                break;
+            else if (fn == 2)
+            {
+                searchContact(c);
             }
-            default:{
-                if (fn == 1)
-                {
-                    showContacts(c);
-                }
-                else if (fn == 2)
-                {
-                    searchContact(c);
-                }
-                break;
-            }
+            break;
+        }
         }
     }
     else
@@ -297,44 +303,50 @@ void editContact(customer *c, int choose, int fn)
 
     if (ch == 1)
     {
-        getchar();
-         Name:
-    printf("\nEnter Name : ");
-    gets(tempName);
-    if(checkNameValid(tempName)){
-     strcpy(((c->directory) + c->n-1)->name,tempName);
-    }else{
-        printf("\nInvalid Name");
-        goto Name;
-    }
+    Name:
+        printf("\nEnter Name : ");
+        gets(tempName);
+        if (checkNameValid(tempName))
+        {
+            strcpy(((c->directory) + c->n - 1)->name, tempName);
+        }
+        else
+        {
+            printf("\nInvalid Name");
+            goto Name;
+        }
         printf("Your name has been edited\n");
     }
     else if (ch == 2)
     {
-        getchar();
-        Number:
-    printf("\nEnter Number : ");
-    gets(tempNumber);
-    if(checkNumberValid(tempNumber)){
-    strcpy(((c->directory) + c->n-1)->number,tempNumber);
-    }else{
-        printf("\nInvalid Number");
-        goto Number;
-    }
+    Number:
+        printf("\nEnter Number : ");
+        gets(tempNumber);
+        if (checkNumberValid(tempNumber))
+        {
+            strcpy(((c->directory) + c->n - 1)->number, tempNumber);
+        }
+        else
+        {
+            printf("\nInvalid Number");
+            goto Number;
+        }
         printf("Your number has been edited\n");
     }
     else if (ch == 3)
     {
-        getchar();
-         Email:
-    printf("\nEnter Email : ");
-    gets(tempEmail);
-    if(checkEmailValid(tempEmail)){
-    strcpy(((c->directory) + c->n-1)->email,tempEmail);
-    }else{
-        printf("\nInvalid Email");
-        goto Email;
-    }
+    Email:
+        printf("\nEnter Email : ");
+        gets(tempEmail);
+        if (checkEmailValid(tempEmail))
+        {
+            strcpy(((c->directory) + c->n - 1)->email, tempEmail);
+        }
+        else
+        {
+            printf("\nInvalid Email");
+            goto Email;
+        }
         printf("Your email has been edited\n");
     }
     else if (ch == 4)
@@ -344,12 +356,13 @@ void editContact(customer *c, int choose, int fn)
         printf("\nYour contact has not been edited\n");
         contactDetails(c, choose + 1, fn);
     }
-    else {
+    else
+    {
         printf("wrong option\n");
         getch();
-        contactDetails(c,choose+1,fn);
+        contactDetails(c, choose + 1, fn);
     }
-    
+    mainMenu(c);
 }
 
 void searchContact(customer *c)
@@ -358,15 +371,15 @@ void searchContact(customer *c)
 
     system("clear");
     screenHeading();
-    gotoxy(70,10);
+    gotoxy(70, 10);
     printf("SEARCH CONTACTS:");
-    gotoxy(60,13);
+    gotoxy(60, 13);
     printf("1\tBy name");
-    gotoxy(60,15);
+    gotoxy(60, 15);
     printf("2\tBy number");
-    gotoxy(60,18);
+    gotoxy(60, 18);
     printf("0\treturn to menu");
-    int ch = chooseBetweenTwo(1,2,0);
+    int ch = chooseBetweenTwo(1, 2, 0);
 
     switch (ch)
     {
@@ -381,51 +394,60 @@ void searchContact(customer *c)
     default:
         mainMenu(c);
         break;
-    // default:
-    //     printf("\n\nwrong choice");
-    //     getch();
-    //     searchContact(c);
-    //     break;
+        // default:
+        //     printf("\n\nwrong choice");
+        //     getch();
+        //     searchContact(c);
+        //     break;
     }
 }
 
 void addContact(customer *c)
 {
     screenHeading();
-    c->n=c->n+1;
-    c->directory = (struct contact *)realloc(c->directory,c->n * sizeof(struct contact));
-    
-    gotoxy(20,10);
+    c->n = c->n + 1;
+    c->directory = (struct contact *)realloc(c->directory, c->n * sizeof(struct contact));
+
+    gotoxy(20, 10);
     printf("ADD CONTACT :-\n\n");
 
     char tempName[50], tempNumber[11], tempEmail[41];
 
-    Name:
+Name:
     printf("\nEnter Name : ");
     gets(tempName);
-    if(checkNameValid(tempName)){
-        strcpy(((c->directory) + c->n-1)->name,tempName);
-    }else{
+    if (checkNameValid(tempName))
+    {
+        strcpy(((c->directory) + c->n - 1)->name, tempName);
+    }
+    else
+    {
         printf("\nInvalid Name");
         goto Name;
     }
-    
-    Number:
+
+Number:
     printf("\nEnter Number : ");
     gets(tempNumber);
-    if(checkNumberValid(tempNumber)){
-    strcpy(((c->directory) + c->n-1)->number,tempNumber);
-    }else{
+    if (checkNumberValid(tempNumber))
+    {
+        strcpy(((c->directory) + c->n - 1)->number, tempNumber);
+    }
+    else
+    {
         printf("\nInvalid Number");
         goto Number;
     }
 
-    Email:
+Email:
     printf("\nEnter Email : ");
     gets(tempEmail);
-    if(checkEmailValid(tempEmail)){
-    strcpy(((c->directory) + c->n-1)->email,tempEmail);
-    }else{
+    if (checkEmailValid(tempEmail))
+    {
+        strcpy(((c->directory) + c->n - 1)->email, tempEmail);
+    }
+    else
+    {
         printf("\nInvalid Email");
         goto Email;
     }
@@ -434,49 +456,73 @@ void addContact(customer *c)
     printf("Press Any Key To go Back To Main Menu\n");
     getch();
     mainMenu(c);
-    
 }
 
-bool checkNameValid(char *name){
+bool checkNameValid(char *name)
+{
 
-    if(!((*name <= 90 && *name >= 65) || (*name <= 122 && *name >= 97) || (*name == '_')))
+    if (!((*name <= 90 && *name >= 65) || (*name <= 122 && *name >= 97) || (*name == '_')))
         return false;
 
-    if(strlen(name) == 0)
+    if (strlen(name) == 0)
         return false;
-    
 }
 
-bool checkNumberValid(char *number){
-    if(!(strlen(number)==10 && number[0]>=54 && number[0]<=57)){
+bool checkNumberValid(char *number)
+{
+    if (!(strlen(number) == 10 && number[0] >= 54 && number[0] <= 57))
+    {
         return false;
     }
-    
+
+    int i = 0;
+    while (number[i] != '\0')
+    {
+        if (!(number[i] <= 57 || number[i] >= 48))
+            return false;
+        i++;
+    }
+
+    return true;
 }
 
-bool checkEmailValid(char *email){
-    int len=strlen(email);
+bool checkEmailValid(char *email)
+{
+    int len = strlen(email);
 
-    char *last_10=&email[len-10];
-    if(strcmp(last_10,"@gmail.com")==0){
+    char *last_10 = &email[len - 10];
+    if ((strcmp(last_10, "@email.com") == 0) || (strcmp(last_10, "@gmail.com") == 0) || (strcmp(last_10, "@yahoo.com") == 0))
+    {
         return true;
     }
     return false;
 }
 
-void deleteContact(customer *c){
-    int contactNum,totalContact;
-    totalContact=c->n;
-    printf("\nEnter Contact serial Number you want to delete : ");
-    scanf("%d",contactNum);
+void deleteContact(customer *c, int choose)
+{
 
-        for(int i=contactNum; i<totalContact; i++){
-             strcpy(((c->directory) + i-1)->name,((c->directory) + i)->name);
-             strcpy(((c->directory) + i-1)->number,((c->directory) + i)->number);
-             strcpy(((c->directory) + i-1)->email,((c->directory) + i)->email);
-        }
-        c->n=c->n-1;
-        printf("\nContact has been deleted");
+    char del;
+    printf("Are you sure y/n : ");
+    scanf("%c", &del);
+    if(del=='y'){
+    int totalContact = c->n;
+    for (int i = choose; i < totalContact; i++)
+    {
+        strcpy(((c->directory) + i - 1)->name, ((c->directory) + i)->name);
+        strcpy(((c->directory) + i - 1)->number, ((c->directory) + i)->number);
+        strcpy(((c->directory) + i - 1)->email, ((c->directory) + i)->email);
+    }
+    c->n--;
+
+    printf("\nContact has been deleted");
+    printf("\nPress any key to go back to main menu");
+    getch();
+    }
+    else
+    {
+    showContacts(c);
+    }
+    
 }
 
 void searchByName(customer *c)
@@ -484,10 +530,10 @@ void searchByName(customer *c)
 
     system("clear");
     system("cls");
-    gotoxy(70,10);
+    gotoxy(70, 10);
     printf("SEARCH CONTACT :\n\n\n");
 
-    gotoxy(60,13);
+    gotoxy(60, 13);
     printf("Enter the name: ");
     char name[50];
     // scanf("%s",&name);
@@ -505,15 +551,15 @@ void searchByName(customer *c)
 
     if (d == 1)
     {
-        gotoxy(70,17);
+        gotoxy(70, 17);
         printf("Contact Found");
-        gotoxy(60,19);
+        gotoxy(60, 19);
         printf(" 1\t%s", ((c->directory) + i)->name);
-        gotoxy(60,23);
+        gotoxy(60, 23);
         printf("1 select contact\t\t0 go back");
-        gotoxy(60,25);
+        gotoxy(60, 25);
         printf(">>");
-        int ch = chooseBetweenTwo(1,0,0);
+        int ch = chooseBetweenTwo(1, 0, 0);
         if (ch == 0)
         {
             mainMenu(c);
@@ -522,7 +568,6 @@ void searchByName(customer *c)
         {
             contactDetails(c, i + 1, 2);
         }
-        
     }
     else
     {
@@ -535,10 +580,10 @@ void searchByNumber(customer *c)
 {
     system("clear");
     system("cls");
-    gotoxy(70,10);
+    gotoxy(70, 10);
     printf("SEARCH CONTACT :\n\n\n");
 
-    gotoxy(60,13);
+    gotoxy(60, 13);
     printf("Enter the number: ");
     char number[11];
     // scanf("%s",&name);
@@ -556,15 +601,15 @@ void searchByNumber(customer *c)
 
     if (d == 1)
     {
-        gotoxy(70,17);
+        gotoxy(70, 17);
         printf("Contact Found");
-        gotoxy(60,19);
+        gotoxy(60, 19);
         printf(" 1\t%s", ((c->directory) + i)->name);
-        gotoxy(60,23);
+        gotoxy(60, 23);
         printf("1 select contact\t\t0 go back");
-        gotoxy(60,25);
+        gotoxy(60, 25);
         printf(">>");
-        int ch = chooseBetweenTwo(1,0,0);
+        int ch = chooseBetweenTwo(1, 0, 0);
         if (ch == 0)
         {
             mainMenu(c);
@@ -635,9 +680,10 @@ bool checkPassword(customer *c)
     int p = 0;
 
     char ch = getch();
-    while(ch!=13 && ch!=10 && p<12){
+    while (ch != 13 && ch != 10 && p < 12)
+    {
         // printf("%d",ch);
-        tempPassword[p++]=ch;
+        tempPassword[p++] = ch;
         printf("*");
         ch = getch();
     }
@@ -841,27 +887,27 @@ int chooseBetweenTwo(int a, int b, int c)
 {
 
     int ch = getch() - 48;
-    
+
     if (ch == -35 || ch == -38 || ch == 79)
     {
         chooseBetweenTwo(a, b, c);
     }
-    else if (ch == a || ch == b || ch == c){
+    else if (ch == a || ch == b || ch == c)
+    {
         return ch;
     }
     else
     {
         printf("\n\n\n");
-        for(int i=0; i<69; i++)
+        for (int i = 0; i < 69; i++)
             printf(" ");
-        printf("OOPS! Wrong Input!  %d\n\n",ch);
+        printf("OOPS! Wrong Input!  %d\n\n", ch);
         // for(int i=0; i<60; i++)
         //     printf(" ");
         // printf("Press any key to enter the input again...");
         // getch();
         chooseBetweenTwo(a, b, c);
     }
-    
 }
 
 // NOTE
