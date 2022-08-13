@@ -139,6 +139,39 @@ void showContacts(customer *c)
 {
     screenHeading();
 
+    gotoxy(78, 10);
+    printf("Sort Contacts:-");
+
+    gotoxy(81, 11);
+    printf("1. By Name.");
+    gotoxy(81, 12);
+    printf("2. By Number.");
+    gotoxy(81, 13);
+    printf("0. Go Back.");
+    gotoxy(78, 15);
+    printf(">>");
+
+    int ch = chooseBetweenTwo(1, 2, 0);
+
+    switch(ch){
+        case 1: {
+            // sortByName(c->directory);
+            // break;
+            sort(c->directory, 0, (c->n)-1, 1);
+            break;
+        }
+        case 2:{
+            sort(c->directory, 0, (c->n)-1, 2);
+            break;
+        }
+        default:{
+            mainMenu(c);
+            break;
+        }
+    }
+
+    screenHeading();
+
     int m = 26; // side margins
     int d = 18; // distance between columns
     /*
@@ -177,53 +210,51 @@ void showContacts(customer *c)
     int i;
     for (i = 0; i < c->n; i++)
     {
-        gotoxy(m + 3, 17 + 2 * i);
-        printf("%d.", i + 1);
+        gotoxy(m+3, 17+2*i);
+        printf("%d.", i+1);
 
-        gotoxy(m + d + 9, 17 + 2 * i);
-        printf("%s", ((c->directory) + i)->name);
+        gotoxy(m+d+9, 17+2*i);
+        printCamelString(((c->directory)+i)->name);
+        // printf("%s", ((c->directory)+i)->name);
 
-        gotoxy(m + 2 * d + 63, 17 + 2 * i);
-        printf("+91-%s", ((c->directory) + i)->number);
+        gotoxy(m+2*d+63, 17+2*i);
+        printf("+91-%s", ((c->directory)+i)->number);
     }
 
-    gotoxy(m + 1, 17 + 2 * i + 3);
+    gotoxy(m + 1, 17+2*i+3);
     printf("Press:");
-    gotoxy(m + 4, 17 + 2 * i + 4);
+    gotoxy(m+4, 17+2*i+4);
     printf("1. Choose a particular contact from the above list.");
-    gotoxy(m + 4, 17 + 2 * i + 5);
+    gotoxy(m+4, 17+2*i+5);
     printf("0. Go back.");
-    gotoxy(m + 1, 17 + 2 * i + 7);
+    gotoxy(m+1, 17+2*i+7);
     printf(">>");
 
     int choose = chooseBetweenTwo(1, 0, 0);
-    switch (choose)
-    {
-    case 1:
-    {
-        gotoxy(m + 1, 17 + 2 * i + 9);
-        printf("Enter the desired serial number: ");
-        int choice;
-        scanf("%d", &choice);
-        getchar();
-        if (choice >= 1 && choice <= c->n)
-        {
-            contactDetails(c, choice - 1, 1);
+    switch(choose){
+        case 1: {
+            gotoxy(m+1, 17+2*i+9);
+            printf("Enter the desired serial number: ");
+            int choice;
+            scanf("%d", &choice);
+            getchar();
+            if(choice>=1 && choice<=c->n){
+                contactDetails(c,choice-1,1);
+            }
+            else {
+                gotoxy(m+1, 17+2*i+11);
+                printf("NO CONTACT");
+                getch();
+                showContacts(c);
+            }
+            break;
         }
-        else
-        {
-            gotoxy(m + 1, 17 + 2 * i + 11);
-            printf("NO CONTACT");
-            getch();
+        case 0: 
             showContacts(c);
-        }
-        break;
-    }
-    case 0:
-        mainMenu(c);
-        break;
+            break;
     }
 }
+
 
 void contactDetails(customer *c, int choose, int fn)
 {
@@ -236,7 +267,7 @@ void contactDetails(customer *c, int choose, int fn)
         printf("CONTACT DETAILS:-");
 
         gotoxy(50, 12);
-        printf("Recipient's Name : %s.", ((c->directory) + (choose))->name);
+        printCamelString(((c->directory) + (choose))->name);
 
         gotoxy(50, 14);
         printf("Contact Number : +91-%s.", ((c->directory) + (choose))->number);
@@ -306,9 +337,9 @@ void editContact(customer *c, int choose, int fn)
     Name:
         printf("\nEnter Name : ");
         gets(tempName);
-        if (checkNameValid(tempName))
-        {
-            strcpy(((c->directory) + choose)->name, tempName);
+        if(checkNameValid(tempName)){
+            lowerString(tempName);
+            strcpy(((c->directory) + c->n-1)->name,tempName);
         }
         else
         {
@@ -334,7 +365,7 @@ void editContact(customer *c, int choose, int fn)
         printf("Your number has been edited\n");
     }
     else if (ch == 3)
-```{
+    {
     Email:
         printf("\nEnter Email : ");
         gets(tempEmail);
@@ -419,7 +450,8 @@ Name:
     gets(tempName);
     if (checkNameValid(tempName))
     {
-        strcpy(((c->directory) + c->n - 1)->name, tempName);
+        lowerString(tempName);
+        strcpy(((c->directory) + c->n-1)->name, tempName);
     }
     else
     {
@@ -499,6 +531,28 @@ bool checkEmailValid(char *email)
     return false;
 }
 
+void printCamelString(char *str){
+    int i=0;
+    while(str[i]!='\0'){
+        if((i==0 && (str[i]<=122 && str[i]>=97)) || (str[i-1]==' ' && (str[i]<=122 && str[i]>=97)))
+            printf("%c", str[i]-32);
+        else
+            printf("%c", str[i]);
+        
+        i++;
+    }
+}
+
+void lowerString(char *str){
+    int i=0;
+    while(str[i]!='\0'){
+        if(str[i]>=65 && str[i]<=90)
+            str[i] = (str[i]+32);
+        
+        i++;
+    }
+}
+
 void deleteContact(customer *c, int choose)
 {
 
@@ -531,6 +585,7 @@ void searchByName(customer *c)
 
     system("clear");
     system("cls");
+    screenHeading();
     gotoxy(70, 10);
     printf("SEARCH CONTACT :\n\n\n");
 
@@ -555,7 +610,8 @@ void searchByName(customer *c)
         gotoxy(70, 17);
         printf("Contact Found");
         gotoxy(60, 19);
-        printf(" 1\t%s", ((c->directory) + i)->name);
+        printf("1. ");
+        printCamelString(((c->directory) + i)->name);
         gotoxy(60, 23);
         printf("1 select contact\t\t0 go back");
         gotoxy(60, 25);
@@ -581,6 +637,7 @@ void searchByNumber(customer *c)
 {
     system("clear");
     system("cls");
+    screenHeading();
     gotoxy(70, 10);
     printf("SEARCH CONTACT :\n\n\n");
 
@@ -638,6 +695,62 @@ customer *loginAuthentication(customer c[])
     getchar();
     if (checkPassword(tempCustomer))
         return (tempCustomer);
+}
+
+int partition (contact *co, int low, int high, int feature) 
+{ 
+    contact pivot = co[high]; // pivot 
+    int i = (low - 1); // Index of smaller element and indicates the right position of pivot found so far
+    
+    for (int j = low; j <= high - 1; j++) 
+    { 
+        if(feature == 1){
+            if (strcmp((co+j)->name, pivot.name) < 0)
+            { 
+                i++;
+                swapContacts((co+i), (co+j));
+            }
+        }
+        else if (feature == 2){
+            if (strcmp((co+j)->number, pivot.number) < 0)
+            { 
+                i++;
+                swapContacts((co+i), (co+j));
+            }
+        }
+    } 
+    swapContacts((co+i+1), (co+high));
+    return (i + 1); 
+}
+
+void sort(contact *co, int low, int high, int feature)
+{ 
+    if (low < high) 
+    { 
+        /* pi is partitioning index, arr[p] is now 
+        at right place */
+        int pi = partition(co, low, high, feature); 
+  
+        // Separately sort elements before 
+        // partition and after partition 
+        sort(co, low, pi - 1, feature); 
+        sort(co, pi + 1, high, feature); 
+    } 
+}
+
+void swapContacts(contact *co1, contact *co2){
+    contact temp;
+    strcpy(temp.name, co1->name);
+    strcpy(temp.email, co1->email);
+    strcpy(temp.number, co1->number);
+
+    strcpy(co1->name, co2->name);
+    strcpy(co1->email, co2->email);
+    strcpy(co1->number, co2->number);
+
+    strcpy(co2->name, temp.name);
+    strcpy(co2->email, temp.email);
+    strcpy(co2->number, temp.number);
 }
 
 customer *checkEmail(customer *c)
