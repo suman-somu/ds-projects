@@ -308,7 +308,7 @@ void editContact(customer *c, int choose, int fn)
         gets(tempName);
         if (checkNameValid(tempName))
         {
-            strcpy(((c->directory) + c->n - 1)->name, tempName);
+            strcpy(((c->directory) + choose)->name, tempName);
         }
         else
         {
@@ -324,7 +324,7 @@ void editContact(customer *c, int choose, int fn)
         gets(tempNumber);
         if (checkNumberValid(tempNumber))
         {
-            strcpy(((c->directory) + c->n - 1)->number, tempNumber);
+            strcpy(((c->directory) + choose)->number, tempNumber);
         }
         else
         {
@@ -340,7 +340,7 @@ void editContact(customer *c, int choose, int fn)
         gets(tempEmail);
         if (checkEmailValid(tempEmail))
         {
-            strcpy(((c->directory) + c->n - 1)->email, tempEmail);
+            strcpy(((c->directory) + choose)->email, tempEmail);
         }
         else
         {
@@ -362,7 +362,7 @@ void editContact(customer *c, int choose, int fn)
         getch();
         contactDetails(c, choose + 1, fn);
     }
-    mainMenu(c);
+    showContacts(c);
 }
 
 void searchContact(customer *c)
