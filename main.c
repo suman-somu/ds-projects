@@ -3,12 +3,12 @@
 #include <string.h>
 #include <stdbool.h>
 #include <unistd.h>
-// #include <conio.h>
-// #include <windows.h>
-#include <termios.h>
+#include <conio.h>
+#include <windows.h>
+// #include <termios.h>
 
 // return 0-9 as 48-57
-int getch(void)
+/*int getch(void)
 {
     struct termios oldattr, newattr;
     int ch;
@@ -32,7 +32,7 @@ int getche(void)
     tcsetattr( STDIN_FILENO, TCSANOW, &oldattr );
     return ch;
 }
-
+*/
 typedef struct contact
 {
     char name[50];
@@ -68,6 +68,8 @@ void searchContact(customer *c);
 void addContact(customer *c);
 
 void editContact(customer *c, int choose, int fn);
+
+void deleteContact(customer *c);
 
 int chooseBetweenTwo(int a, int b, int c);
 
@@ -460,6 +462,21 @@ bool checkEmailValid(char *email){
         return true;
     }
     return false;
+}
+
+void deleteContact(customer *c){
+    int contactNum,totalContact;
+    totalContact=c->n;
+    printf("\nEnter Contact serial Number you want to delete : ");
+    scanf("%d",contactNum);
+
+        for(int i=contactNum; i<totalContact; i++){
+             strcpy(((c->directory) + i-1)->name,((c->directory) + i)->name);
+             strcpy(((c->directory) + i-1)->number,((c->directory) + i)->number);
+             strcpy(((c->directory) + i-1)->email,((c->directory) + i)->email);
+        }
+        c->n=c->n-1;
+        printf("\nContact has been deleted");
 }
 
 void searchByName(customer *c)
