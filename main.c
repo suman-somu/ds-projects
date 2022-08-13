@@ -334,7 +334,7 @@ void editContact(customer *c, int choose, int fn)
         printf("Your number has been edited\n");
     }
     else if (ch == 3)
-    {
+```{
     Email:
         printf("\nEnter Email : ");
         gets(tempEmail);
@@ -344,6 +344,7 @@ void editContact(customer *c, int choose, int fn)
         }
         else
         {
+
             printf("\nInvalid Email");
             goto Email;
         }
